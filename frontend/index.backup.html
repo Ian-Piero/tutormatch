@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TutorMatch</title>
+<style>
+/* ─── Google Fonts ─────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+/* ─── Reset & Variables ────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #f0ede8;
+  --white:        #ffffff;
+  --surface:      #f7f5f2;
+  --border:       #e2ddd7;
+  --text:         #1a1814;
+  --muted:        #8a8075;
+  --accent:       #1a47d6;
+  --accent-l:     #eef1fc;
+  --green:        #1a7a4a;
+  --green-l:      #e8f5ee;
+  --red:          #c0392b;
+  --red-l:        #fdecea;
+  --yellow:       #b07d00;
+  --yellow-l:     #fff8e0;
+  --font:         'Nunito', sans-serif;
+  --mono:         'Space Mono', monospace;
+  --r:            14px;
+  --r-sm:         8px;
+  --shadow:       0 2px 12px rgba(0,0,0,0.07);
+  --shadow-md:    0 4px 24px rgba(0,0,0,0.10);
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+/* ─── Auth Screen ──────────────────────────────────────────────────────── */
+#auth-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #0f2a8a 0%, #1a47d6 60%, #2d6be4 100%);
+}
+
+.auth-card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.auth-logo {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.auth-logo span { color: var(--muted); font-weight: 400; }
+
+.auth-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.auth-tabs {
+  display: flex;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  padding: 4px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.auth-tab {
+  flex: 1;
+  text-align: center;
+  padding: 9px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+
+.auth-tab.active {
+  background: var(--white);
+  color: var(--accent);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+
+.form-group { margin-bottom: 16px; }
+
+.form-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  width: 100%;
+  height: 44px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0 14px;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus { border-color: var(--accent); background: var(--white); }
+
+.form-select {
+  width: 100%;
+  height: 44px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0 14px;
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text);
+  background: var(--surface);
+  outline: none;
+  cursor: pointer;
+}
+
+/* ─── Buttons ──────────────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: var(--r-sm);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--text);
+  transition: all 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn:hover { border-color: #aaa; }
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  width: 100%;
+}
+.btn-primary:hover { background: #1538b8; border-color: #1538b8; color: white; }
+
+.btn-sm {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.btn-danger { border-color: var(--red); color: var(--red); }
+.btn-danger:hover { background: var(--red-l); }
+
+.btn-success { border-color: var(--green); color: var(--green); }
+.btn-success:hover { background: var(--green-l); }
+
+/* ─── App Layout ───────────────────────────────────────────────────────── */
+#app { display: none; min-height: 100vh; }
+
+/* Desktop: sidebar + content */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ─── Sidebar (desktop) ────────────────────────────────────────────────── */
+.sidebar {
+  width: 240px;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0; left: 0;
+  height: 100vh;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+
+.sidebar-logo {
+  padding: 24px 20px 18px;
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo span { color: var(--muted); font-weight: 400; }
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.nav-item:hover { background: var(--surface); color: var(--text); }
+.nav-item.active { background: var(--accent-l); color: var(--accent); }
+.nav-icon { font-size: 18px; width: 22px; text-align: center; flex-shrink: 0; }
+
+.sidebar-user {
+  padding: 14px 12px;
+  border-top: 1px solid var(--border);
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+}
+
+.u-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--accent-l);
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.u-info .u-name { font-size: 13px; font-weight: 700; }
+.u-info .u-role { font-size: 11px; color: var(--muted); }
+
+.logout-btn {
+  margin-top: 8px;
+  width: 100%;
+  height: 32px;
+  font-size: 12px;
+  color: var(--red);
+  border-color: transparent;
+  background: transparent;
+}
+.logout-btn:hover { background: var(--red-l); border-color: var(--red); }
+
+/* ─── Main content ─────────────────────────────────────────────────────── */
+.main-content {
+  margin-left: 240px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar-title { font-size: 18px; font-weight: 800; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+/* Hamburger (mobile only) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.page-content { padding: 28px; flex: 1; }
+
+/* ─── Sections ─────────────────────────────────────────────────────────── */
+.section { display: none; }
+.section.active { display: block; }
+
+/* ─── Cards ────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title { font-size: 15px; font-weight: 800; }
+.card-body { padding: 22px; }
+
+/* ─── Stats grid ───────────────────────────────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+
+.stat-label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+.stat-value { font-size: 32px; font-weight: 800; font-family: var(--mono); margin-top: 6px; }
+.stat-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ─── Tutores grid ─────────────────────────────────────────────────────── */
+.tutores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.tutor-card {
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+
+.tutor-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.tc-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+
+.tc-avatar {
+  width: 54px; height: 54px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 800;
+  flex-shrink: 0;
+}
+
+.av-blue   { background: #dde8fb; color: #1a47d6; }
+.av-green  { background: #d9f0e6; color: #1a7a4a; }
+.av-red    { background: #fde5e5; color: #c0392b; }
+.av-purple { background: #ede5fd; color: #6d28d9; }
+.av-teal   { background: #d5f5f0; color: #0f7a6e; }
+
+.tc-name { font-size: 16px; font-weight: 800; }
+.tc-subject { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+
+.tc-rating { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.stars { color: #f59e0b; font-size: 13px; letter-spacing: -1px; }
+.rating-num { font-size: 13px; font-weight: 700; }
+.reviews { font-size: 12px; color: var(--muted); }
+
+.tc-materias {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-bottom: 14px;
+}
+
+.chip-tag {
+  background: var(--accent-l);
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.tc-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.tc-price { font-size: 17px; font-weight: 800; color: var(--accent); }
+.tc-price span { font-size: 12px; font-weight: 500; color: var(--muted); }
+
+.tc-disp {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.disp-yes { background: var(--green-l); color: var(--green); }
+.disp-no  { background: var(--yellow-l); color: var(--yellow); }
+
+/* ─── Search bar ───────────────────────────────────────────────────────── */
+.search-wrap {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 200px;
+  height: 44px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0 14px 0 40px;
+  font-family: var(--font);
+  font-size: 14px;
+  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238a8075' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.868-3.833zm-5.242 1.156a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z'/%3E%3C/svg%3E") no-repeat 14px center;
+  outline: none;
+  color: var(--text);
+}
+
+.search-input:focus { border-color: var(--accent); }
+
+/* ─── Reserva modal ────────────────────────────────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.modal-title { font-size: 18px; font-weight: 800; }
+
+.modal-close {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+}
+
+.modal-close:hover { color: var(--text); }
+
+.tutor-selected {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: var(--accent-l);
+  border-radius: var(--r-sm);
+  margin-bottom: 20px;
+}
+
+.ts-name { font-weight: 800; font-size: 15px; }
+.ts-sub  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.price-summary {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  margin-bottom: 18px;
+}
+
+.ps-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13.5px;
+  color: var(--muted);
+  padding: 4px 0;
+}
+
+.ps-row.total {
+  color: var(--text);
+  font-weight: 800;
+  font-size: 15px;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  margin-top: 6px;
+}
+
+/* ─── Reservas list ────────────────────────────────────────────────────── */
+.reservas-list { display: flex; flex-direction: column; gap: 14px; }
+
+.reserva-card {
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+}
+
+.rc-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.rc-info { flex: 1; }
+.rc-materia { font-size: 15px; font-weight: 800; }
+.rc-tutor { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+.rc-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  margin-bottom: 14px;
+}
+
+.rc-meta-item .label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+.rc-meta-item .value { font-size: 14px; font-weight: 700; margin-top: 3px; }
+
+.rc-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* ─── Status pills ─────────────────────────────────────────────────────── */
+.pill {
+  display: inline-flex; align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.pill-green  { background: var(--green-l); color: var(--green); }
+.pill-blue   { background: var(--accent-l); color: var(--accent); }
+.pill-yellow { background: var(--yellow-l); color: var(--yellow); }
+.pill-red    { background: var(--red-l); color: var(--red); }
+.pill-gray   { background: var(--surface); color: var(--muted); border: 1px solid var(--border); }
+
+/* ─── Toast ────────────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--text);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-md);
+  z-index: 9999;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+  max-width: 320px;
+}
+
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: var(--green); }
+.toast.error   { background: var(--red); }
+
+/* ─── Loading ──────────────────────────────────────────────────────────── */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: var(--muted);
+  font-weight: 600;
+  gap: 10px;
+}
+
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── Empty state ──────────────────────────────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 56px 20px;
+  color: var(--muted);
+}
+.empty-icon { font-size: 48px; margin-bottom: 14px; }
+.empty h3 { font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.empty p { font-size: 14px; }
+
+/* ─── Alert message ────────────────────────────────────────────────────── */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--r-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.alert.show { display: block; }
+.alert-error   { background: var(--red-l); color: var(--red); border: 1px solid #f5c6c6; }
+.alert-success { background: var(--green-l); color: var(--green); border: 1px solid #b9e6cc; }
+
+/* ─── Mobile bottom nav ────────────────────────────────────────────────── */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  z-index: 200;
+  padding: 6px 0 max(10px, env(safe-area-inset-bottom));
+}
+
+.bottom-nav-inner {
+  display: flex;
+}
+
+.bn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 4px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  transition: color 0.15s;
+}
+
+.bn-item.active { color: var(--accent); }
+.bn-icon { font-size: 22px; }
+
+/* ─── Mobile sidebar overlay ───────────────────────────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 90;
+}
+
+/* ─── Responsive: Tablet / Mobile ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Sidebar goes off-canvas */
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: 95;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+
+  /* Main content takes full width */
+  .main-content { margin-left: 0; }
+
+  /* Show hamburger */
+  .hamburger { display: flex; }
+
+  /* Hide desktop title supplement on mobile topbar */
+  .topbar { padding: 0 16px; }
+
+  /* Page content tighter */
+  .page-content { padding: 16px 16px 80px; }
+
+  /* Show bottom nav */
+  .bottom-nav { display: flex; }
+
+  /* Tutor grid: 1 column on very small screens */
+  .tutores-grid { grid-template-columns: 1fr; }
+
+  /* Stats: 2 cols */
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Modal full width */
+  .modal-box { padding: 20px 18px 18px; }
+
+  /* Toast at bottom center */
+  .toast { bottom: 80px; right: 12px; left: 12px; max-width: none; }
+}
+
+@media (max-width: 400px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .auth-card { padding: 28px 20px; }
+}
+
+/* ─── Misc helpers ─────────────────────────────────────────────────────── */
+.text-muted { color: var(--muted); }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.flex-gap { display: flex; align-items: center; gap: 10px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     AUTH SCREEN
+════════════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Tutor<span>Match</span></div>
+    <div class="auth-tagline">Encuentra tu tutor ideal en minutos</div>
+
+    <!-- Tabs Login / Registro -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Iniciar sesión</div>
+      <div class="auth-tab" id="tab-registro" onclick="switchAuthTab('registro')">Crear cuenta</div>
+    </div>
+
+    <!-- Alerta de error -->
+    <div class="alert alert-error" id="auth-alert"></div>
+
+    <!-- Formulario Login -->
+    <div id="form-login">
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input class="form-input" type="email" id="login-email" placeholder="correo@ejemplo.com" value="carlos@uni.edu">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" type="password" id="login-pass" placeholder="••••••••" value="123456">
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">
+        Demo: <strong>carlos@uni.edu</strong> / <strong>123456</strong>
+      </p>
+      <button class="btn btn-primary" onclick="login()">Entrar</button>
+    </div>
+
+    <!-- Formulario Registro -->
+    <div id="form-registro" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Nombre completo</label>
+        <input class="form-input" type="text" id="reg-nombre" placeholder="Tu nombre">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input class="form-input" type="email" id="reg-email" placeholder="correo@ejemplo.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input class="form-input" type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Soy...</label>
+        <select class="form-select" id="reg-rol">
+          <option value="estudiante">Estudiante</option>
+          <option value="tutor">Tutor</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="registro()">Crear cuenta</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     MAIN APP
+════════════════════════════════════════════════ -->
+<div id="app">
+  <div class="app-layout">
+
+    <!-- Sidebar overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">Tutor<span>Match</span></div>
+      <nav class="sidebar-nav">
+        <div class="nav-item active" id="nav-inicio" onclick="goTo('inicio')">
+          <span class="nav-icon">🏠</span> Inicio
+        </div>
+        <div class="nav-item" id="nav-tutores" onclick="goTo('tutores')">
+          <span class="nav-icon">🔍</span> Buscar tutores
+        </div>
+        <div class="nav-item" id="nav-reservas" onclick="goTo('reservas')">
+          <span class="nav-icon">📅</span> Mis reservas
+        </div>
+      </nav>
+      <div class="sidebar-user">
+        <div class="user-badge">
+          <div class="u-avatar" id="sidebar-initials">--</div>
+          <div class="u-info">
+            <div class="u-name" id="sidebar-name">--</div>
+            <div class="u-role" id="sidebar-role">--</div>
+          </div>
+        </div>
+        <button class="btn logout-btn" onclick="logout()">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+      <div class="topbar">
+        <div class="flex-gap">
+          <!-- Hamburger (mobile) -->
+          <div class="hamburger" onclick="toggleSidebar()">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="topbar-title" id="topbar-title">Inicio</span>
+        </div>
+        <div class="topbar-right">
+          <span id="topbar-user" style="font-size:13px;color:var(--muted);font-weight:600;"></span>
+        </div>
+      </div>
+
+      <div class="page-content">
+
+        <!-- ── SECCIÓN: INICIO ──────────────────────────── -->
+        <div class="section active" id="sec-inicio">
+          <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Tutores disponibles</div>
+              <div class="stat-value" style="color:var(--accent)" id="stat-tutores">—</div>
+              <div class="stat-sub">listos para ayudarte</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Mis reservas</div>
+              <div class="stat-value" style="color:var(--green)" id="stat-reservas">—</div>
+              <div class="stat-sub">sesiones agendadas</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Próxima sesión</div>
+              <div class="stat-value" style="color:var(--yellow);font-size:18px;padding-top:8px;" id="stat-proxima">—</div>
+              <div class="stat-sub" id="stat-proxima-sub"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Tutores destacados</span>
+              <button class="btn btn-sm" onclick="goTo('tutores')">Ver todos →</button>
+            </div>
+            <div class="card-body">
+              <div class="tutores-grid" id="inicio-tutores">
+                <div class="loading"><div class="spinner"></div> Cargando...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN: TUTORES ────────────────────────── -->
+        <div class="section" id="sec-tutores">
+          <div class="search-wrap">
+            <input class="search-input" type="text" id="search-input"
+              placeholder="Buscar por materia o nombre..." oninput="filtrarTutores()">
+            <button class="btn" id="filter-disp" onclick="toggleDisponibles()">
+              Solo disponibles
+            </button>
+          </div>
+          <div class="tutores-grid" id="tutores-grid">
+            <div class="loading"><div class="spinner"></div> Cargando tutores...</div>
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN: RESERVAS ───────────────────────── -->
+        <div class="section" id="sec-reservas">
+          <div class="flex-between" style="margin-bottom:20px;">
+            <h2 style="font-size:16px;font-weight:800;">Mis reservas</h2>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;" id="filtros-reserva">
+              <button class="btn btn-sm active-filter" onclick="filtrarReservas('todas', this)">Todas</button>
+              <button class="btn btn-sm" onclick="filtrarReservas('pendiente', this)">Pendientes</button>
+              <button class="btn btn-sm" onclick="filtrarReservas('confirmada', this)">Confirmadas</button>
+              <button class="btn btn-sm" onclick="filtrarReservas('completada', this)">Completadas</button>
+              <button class="btn btn-sm" onclick="filtrarReservas('cancelada', this)">Canceladas</button>
+            </div>
+          </div>
+          <div class="reservas-list" id="reservas-list">
+            <div class="loading"><div class="spinner"></div> Cargando reservas...</div>
+          </div>
+        </div>
+
+      </div><!-- /page-content -->
+    </div><!-- /main-content -->
+  </div><!-- /app-layout -->
+
+  <!-- Bottom nav (mobile) -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-inner">
+      <div class="bn-item active" id="bn-inicio" onclick="goTo('inicio')">
+        <span class="bn-icon">🏠</span>Inicio
+      </div>
+      <div class="bn-item" id="bn-tutores" onclick="goTo('tutores')">
+        <span class="bn-icon">🔍</span>Buscar
+      </div>
+      <div class="bn-item" id="bn-reservas" onclick="goTo('reservas')">
+        <span class="bn-icon">📅</span>Reservas
+      </div>
+    </div>
+  </nav>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     MODAL: CREAR RESERVA
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-reserva">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title">Reservar sesión</span>
+      <button class="modal-close" onclick="cerrarModal()">✕</button>
+    </div>
+
+    <!-- Tutor seleccionado -->
+    <div class="tutor-selected" id="modal-tutor-info">
+      <div class="tc-avatar av-blue" id="modal-avatar">--</div>
+      <div>
+        <div class="ts-name" id="modal-tutor-nombre">--</div>
+        <div class="ts-sub" id="modal-tutor-materia">--</div>
+      </div>
+    </div>
+
+    <div class="alert alert-error" id="modal-alert"></div>
+
+    <div class="form-group">
+      <label class="form-label">Materia a trabajar</label>
+      <input class="form-input" type="text" id="res-materia" placeholder="Ej. Integrales por partes">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input class="form-input" type="date" id="res-fecha">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hora</label>
+        <input class="form-input" type="time" id="res-hora">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Duración</label>
+      <select class="form-select" id="res-duracion" onchange="calcularPrecio()">
+        <option value="30">30 minutos</option>
+        <option value="60" selected>60 minutos</option>
+        <option value="90">90 minutos</option>
+        <option value="120">120 minutos</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Nota para el tutor (opcional)</label>
+      <input class="form-input" type="text" id="res-nota" placeholder="Temas específicos, preguntas...">
+    </div>
+
+    <!-- Resumen de precio -->
+    <div class="price-summary">
+      <div class="ps-row">
+        <span>Tarifa tutor</span>
+        <span id="ps-base">—</span>
+      </div>
+      <div class="ps-row">
+        <span>Comisión plataforma (10%)</span>
+        <span id="ps-comision">—</span>
+      </div>
+      <div class="ps-row total">
+        <span>Total</span>
+        <span id="ps-total">—</span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="crearReserva()">
+      Confirmar reserva
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════ -->
+<script>
+// ─── Config ─────────────────────────────────────────────────────────────
+// Cambia esta URL si el backend corre en otro puerto/host
+const API = 'http://localhost:3000/api';
+
+// ─── Estado global ───────────────────────────────────────────────────────
+// Funciones seguras para localStorage (puede no funcionar en file://)
+function leerStorage(k)       { try { return localStorage.getItem(k); } catch { return null; } }
+function escribirStorage(k,v) { try { localStorage.setItem(k, v); } catch {} }
+function borrarStorage(k)     { try { localStorage.removeItem(k); } catch {} }
+
+let token        = leerStorage('tm_token') || null;
+let usuario      = JSON.parse(leerStorage('tm_user') || 'null');
+let tutoresData  = [];
+let reservasData = [];
+let tutorActivo  = null;
+let soloDisp     = false;
+let filtroEstado = 'todas';
+
+// ─── Inicialización ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  if (token && usuario) {
+    mostrarApp();
+  } else {
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('res-fecha').min   = hoy;
+  document.getElementById('res-fecha').value = hoy;
+});
+
+// ─── Autenticación ───────────────────────────────────────────────────────
+function switchAuthTab(tab) {
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-registro').classList.toggle('active', tab === 'registro');
+  document.getElementById('form-login').style.display    = tab === 'login'    ? '' : 'none';
+  document.getElementById('form-registro').style.display = tab === 'registro' ? '' : 'none';
+  ocultarAlerta('auth-alert');
+}
+
+async function login() {
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-pass').value;
+
+  if (!email || !password) {
+    mostrarAlerta('auth-alert', 'Por favor completa todos los campos.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!data.ok) {
+      mostrarAlerta('auth-alert', data.mensaje);
+      return;
+    }
+
+    // Guardar token y usuario
+    token   = data.token;
+    usuario = data.usuario;
+    escribirStorage('tm_token', token);
+    escribirStorage('tm_user', JSON.stringify(usuario));
+
+    mostrarApp();
+  } catch (err) {
+    // Si el backend no está corriendo, usamos datos de demostración
+    loginDemo(email, password);
+  }
+}
+
+// ── Login demo (sin backend activo) ─────────────────────────────────────
+function loginDemo(email, password) {
+  const demoUsers = [
+    { id:'u1', nombre:'Carlos Mendoza', email:'carlos@uni.edu',    password:'123456', rol:'estudiante' },
+    { id:'u2', nombre:'Sofía López',    email:'sofia@uni.edu',     password:'123456', rol:'estudiante' },
+    { id:'u3', nombre:'Admin General',  email:'admin@tutormatch.pe',password:'admin123', rol:'admin'  }
+  ];
+  const u = demoUsers.find(u => u.email === email && u.password === password);
+  if (!u) { mostrarAlerta('auth-alert', 'Credenciales incorrectas. (Demo: carlos@uni.edu / 123456)'); return; }
+  token   = 'DEMO_TOKEN';
+  usuario = u;
+  localStorage.setItem('tm_token', token);
+  localStorage.setItem('tm_user', JSON.stringify(u));
+  mostrarApp();
+}
+
+async function registro() {
+  const nombre   = document.getElementById('reg-nombre').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-pass').value;
+  const rol      = document.getElementById('reg-rol').value;
+
+  if (!nombre || !email || !password) {
+    mostrarAlerta('auth-alert', 'Completa todos los campos obligatorios.');
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/auth/registro`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre, email, password, rol })
+    });
+    const data = await res.json();
+
+    if (!data.ok) { mostrarAlerta('auth-alert', data.mensaje); return; }
+
+    toast('Cuenta creada. ¡Inicia sesión!', 'success');
+    switchAuthTab('login');
+    document.getElementById('login-email').value = email;
+  } catch {
+    mostrarAlerta('auth-alert', 'Error de conexión. Verifica que el backend esté corriendo.');
+  }
+}
+
+function logout() {
+  borrarStorage('tm_token');
+  borrarStorage('tm_user');
+  token   = null;
+  usuario = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+}
+
+// ─── App Init ────────────────────────────────────────────────────────────
+function mostrarApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  // Rellenar datos de usuario en sidebar
+  const initials = usuario.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sidebar-initials').textContent = initials;
+  document.getElementById('sidebar-name').textContent     = usuario.nombre;
+  document.getElementById('sidebar-role').textContent     = capitalize(usuario.rol);
+  document.getElementById('topbar-user').textContent      = `Hola, ${usuario.nombre.split(' ')[0]}`;
+
+  cargarTutores();
+  cargarReservas();
+}
+
+// ─── Navegación ──────────────────────────────────────────────────────────
+function goTo(seccion) {
+  // Ocultar todas las secciones
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(`sec-${seccion}`).classList.add('active');
+
+  // Nav items sidebar
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`nav-${seccion}`)?.classList.add('active');
+
+  // Bottom nav
+  document.querySelectorAll('.bn-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`bn-${seccion}`)?.classList.add('active');
+
+  // Título
+  const titles = { inicio:'Inicio', tutores:'Buscar tutores', reservas:'Mis reservas' };
+  document.getElementById('topbar-title').textContent = titles[seccion] || seccion;
+
+  closeSidebar();
+}
+
+// ─── Sidebar toggle (mobile) ─────────────────────────────────────────────
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// ─── Tutores ─────────────────────────────────────────────────────────────
+async function cargarTutores() {
+  try {
+    const res = await apiFetch('/tutores');
+    tutoresData = res.tutores || [];
+  } catch {
+    // Datos de demo si no hay backend
+    tutoresData = tutoresDemo();
+  }
+  renderTutores(tutoresData);
+  renderInicioTutores();
+  actualizarStats();
+}
+
+function tutoresDemo() {
+  return [
+    { id:'t1', nombre:'Rafael Gómez',  materias:['Cálculo Diferencial','Álgebra Lineal','Estadística'], bio:'Ing. matemático, 5 años de experiencia.', precioPorHora:40, rating:4.9, totalResenas:142, disponible:true },
+    { id:'t2', nombre:'María López',   materias:['Python','Machine Learning','SQL'],                    bio:'Data Scientist, enseña programación para ciencias.', precioPorHora:35, rating:4.8, totalResenas:98,  disponible:true },
+    { id:'t3', nombre:'Juan Pérez',    materias:['Física General','Termodinámica','Mecánica'],          bio:'Físico teórico, especialista en exámenes de ingreso.', precioPorHora:30, rating:4.7, totalResenas:77,  disponible:false },
+    { id:'t4', nombre:'Karen Ríos',    materias:['Inglés B2','IELTS','Conversación'],                   bio:'Certificada Cambridge CELTA.', precioPorHora:28, rating:4.9, totalResenas:201, disponible:true  }
+  ];
+}
+
+const avColors = ['av-blue','av-green','av-red','av-purple','av-teal'];
+
+function tutorCardHTML(t, idx) {
+  const av    = avColors[idx % avColors.length];
+  const inits = t.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const mats  = t.materias.slice(0,3).map(m => `<span class="chip-tag">${m}</span>`).join('');
+  const estrellas = '★'.repeat(Math.round(t.rating)) + '☆'.repeat(5 - Math.round(t.rating));
+
+  return `
+    <div class="tutor-card" onclick="abrirModal('${t.id}')">
+      <div class="tc-top">
+        <div class="tc-avatar ${av}">${inits}</div>
+        <div>
+          <div class="tc-name">${t.nombre}</div>
+          <div class="tc-subject text-muted">${t.bio.slice(0,60)}...</div>
+          <div class="tc-rating">
+            <span class="stars">${estrellas}</span>
+            <span class="rating-num">${t.rating}</span>
+            <span class="reviews">(${t.totalResenas})</span>
+          </div>
+        </div>
+      </div>
+      <div class="tc-materias">${mats}</div>
+      <div class="tc-footer">
+        <div class="tc-price">S/${t.precioPorHora} <span>/ hora</span></div>
+        <div class="tc-disp ${t.disponible ? 'disp-yes':'disp-no'}">
+          ${t.disponible ? '● Disponible' : '○ Ocupado'}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderTutores(lista) {
+  const grid = document.getElementById('tutores-grid');
+  if (!lista.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
+      <div class="empty-icon">🔍</div>
+      <h3>Sin resultados</h3>
+      <p>Intenta con otro término de búsqueda</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = lista.map((t,i) => tutorCardHTML(t,i)).join('');
+}
+
+function renderInicioTutores() {
+  const grid = document.getElementById('inicio-tutores');
+  const top  = tutoresData.filter(t=>t.disponible).slice(0,4);
+  grid.innerHTML = top.map((t,i) => tutorCardHTML(t,i)).join('');
+}
+
+function filtrarTutores() {
+  const q    = document.getElementById('search-input').value.toLowerCase();
+  let lista  = tutoresData;
+  if (soloDisp) lista = lista.filter(t => t.disponible);
+  if (q) lista = lista.filter(t =>
+    t.nombre.toLowerCase().includes(q) ||
+    t.materias.some(m => m.toLowerCase().includes(q)) ||
+    t.bio.toLowerCase().includes(q)
+  );
+  renderTutores(lista);
+}
+
+function toggleDisponibles() {
+  soloDisp = !soloDisp;
+  const btn = document.getElementById('filter-disp');
+  btn.style.borderColor = soloDisp ? 'var(--accent)' : '';
+  btn.style.color       = soloDisp ? 'var(--accent)' : '';
+  filtrarTutores();
+}
+
+// ─── Reservas ────────────────────────────────────────────────────────────
+async function cargarReservas() {
+  try {
+    const res = await apiFetch('/reservas');
+    reservasData = res.reservas || [];
+  } catch {
+    reservasData = reservasDemo();
+  }
+  renderReservas();
+  actualizarStats();
+}
+
+function reservasDemo() {
+  return [
+    { id:'r1', materia:'Cálculo Diferencial', fecha:'2025-04-26', hora:'10:00', duracionMinutos:60, estado:'completada', precioTotal:44, tutor:{ nombre:'Rafael Gómez' }, nota:'' },
+    { id:'r2', materia:'Python para Data',    fecha:'2025-04-28', hora:'10:00', duracionMinutos:90, estado:'confirmada', precioTotal:52.5, tutor:{ nombre:'María López' },  nota:'Quiero aprender Pandas' }
+  ];
+}
+
+const estadoPill = {
+  pendiente:  'pill-yellow',
+  confirmada: 'pill-blue',
+  completada: 'pill-green',
+  cancelada:  'pill-red'
+};
+
+const estadoLabel = {
+  pendiente:'Pendiente', confirmada:'Confirmada', completada:'Completada', cancelada:'Cancelada'
+};
+
+function renderReservas() {
+  const lista = filtroEstado === 'todas'
+    ? reservasData
+    : reservasData.filter(r => r.estado === filtroEstado);
+
+  const container = document.getElementById('reservas-list');
+
+  if (!lista.length) {
+    container.innerHTML = `<div class="empty">
+      <div class="empty-icon">📅</div>
+      <h3>Sin reservas</h3>
+      <p>Busca un tutor y reserva tu primera sesión</p>
+      <button class="btn mt-16" onclick="goTo('tutores')">Buscar tutores</button>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = lista.map(r => {
+    const botones = [];
+    if (r.estado === 'pendiente' || r.estado === 'confirmada') {
+      botones.push(`<button class="btn btn-sm btn-danger" onclick="cambiarEstado('${r.id}','cancelada')">Cancelar</button>`);
+    }
+    if (r.estado === 'confirmada') {
+      botones.push(`<button class="btn btn-sm btn-success" onclick="cambiarEstado('${r.id}','completada')">Marcar completada</button>`);
+    }
+    if (r.estado === 'completada') {
+      botones.push(`<button class="btn btn-sm" disabled style="opacity:.5;cursor:default;">✓ Completada</button>`);
+    }
+
+    return `
+    <div class="reserva-card">
+      <div class="rc-header">
+        <div class="tc-avatar ${avColors[lista.indexOf(r) % avColors.length]}" style="width:46px;height:46px;font-size:15px;">
+          ${(r.tutor?.nombre||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}
+        </div>
+        <div class="rc-info">
+          <div class="rc-materia">${r.materia}</div>
+          <div class="rc-tutor">con ${r.tutor?.nombre || 'Tutor'}</div>
+        </div>
+        <span class="pill ${estadoPill[r.estado]}">${estadoLabel[r.estado]}</span>
+      </div>
+      <div class="rc-meta">
+        <div class="rc-meta-item"><div class="label">Fecha</div><div class="value">${formatFecha(r.fecha)}</div></div>
+        <div class="rc-meta-item"><div class="label">Hora</div><div class="value">${r.hora}</div></div>
+        <div class="rc-meta-item"><div class="label">Duración</div><div class="value">${r.duracionMinutos} min</div></div>
+        <div class="rc-meta-item"><div class="label">Total</div><div class="value" style="color:var(--accent)">S/${r.precioTotal}</div></div>
+      </div>
+      ${r.nota ? `<p style="font-size:13px;color:var(--muted);margin-bottom:12px;">📝 ${r.nota}</p>` : ''}
+      <div class="rc-actions">${botones.join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function filtrarReservas(estado, btn) {
+  filtroEstado = estado;
+  document.querySelectorAll('#filtros-reserva .btn').forEach(b => b.classList.remove('active-filter'));
+  btn.classList.add('active-filter');
+  renderReservas();
+}
+
+async function cambiarEstado(id, estado) {
+  try {
+    const data = await apiFetch(`/reservas/${id}/estado`, 'PUT', { estado });
+    if (data.ok) {
+      // Actualizar en cache local
+      const r = reservasData.find(r => r.id === id);
+      if (r) r.estado = estado;
+      renderReservas();
+      actualizarStats();
+      toast(`Reserva marcada como "${estadoLabel[estado]}"`, 'success');
+    }
+  } catch {
+    // Demo: actualizar localmente
+    const r = reservasData.find(r => r.id === id);
+    if (r) { r.estado = estado; renderReservas(); actualizarStats(); }
+    toast(`Estado actualizado (demo)`, 'success');
+  }
+}
+
+// ─── Modal: Reservar ─────────────────────────────────────────────────────
+function abrirModal(tutorId) {
+  tutorActivo = tutoresData.find(t => t.id === tutorId);
+  if (!tutorActivo) return;
+
+  const inits = tutorActivo.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('modal-avatar').textContent          = inits;
+  document.getElementById('modal-tutor-nombre').textContent    = tutorActivo.nombre;
+  document.getElementById('modal-tutor-materia').textContent   = tutorActivo.materias.join(' · ');
+  document.getElementById('res-materia').value                 = '';
+  document.getElementById('res-nota').value                    = '';
+  ocultarAlerta('modal-alert');
+
+  calcularPrecio();
+  document.getElementById('modal-reserva').classList.add('open');
+}
+
+function cerrarModal() {
+  document.getElementById('modal-reserva').classList.remove('open');
+  tutorActivo = null;
+}
+
+function calcularPrecio() {
+  if (!tutorActivo) return;
+  const mins     = parseInt(document.getElementById('res-duracion').value) || 60;
+  const horas    = mins / 60;
+  const subtotal = horas * tutorActivo.precioPorHora;
+  const comision = subtotal * 0.10;
+  const total    = subtotal + comision;
+
+  document.getElementById('ps-base').textContent     = `S/${subtotal.toFixed(2)}`;
+  document.getElementById('ps-comision').textContent = `S/${comision.toFixed(2)}`;
+  document.getElementById('ps-total').textContent    = `S/${total.toFixed(2)}`;
+}
+
+async function crearReserva() {
+  const materia  = document.getElementById('res-materia').value.trim();
+  const fecha    = document.getElementById('res-fecha').value;
+  const hora     = document.getElementById('res-hora').value;
+  const duracion = document.getElementById('res-duracion').value;
+  const nota     = document.getElementById('res-nota').value.trim();
+
+  if (!materia || !fecha || !hora) {
+    mostrarAlerta('modal-alert', 'Completa materia, fecha y hora.');
+    return;
+  }
+
+  const body = {
+    tutorId: tutorActivo.id,
+    materia, fecha, hora,
+    duracionMinutos: parseInt(duracion),
+    nota
+  };
+
+  try {
+    const data = await apiFetch('/reservas', 'POST', body);
+    if (!data.ok) { mostrarAlerta('modal-alert', data.mensaje); return; }
+
+    reservasData.unshift(data.reserva);
+    cerrarModal();
+    renderReservas();
+    actualizarStats();
+    toast('¡Reserva creada exitosamente! 🎉', 'success');
+    goTo('reservas');
+  } catch {
+    // Demo: crear localmente
+    const mins  = parseInt(duracion);
+    const horas = mins / 60;
+    const sub   = horas * tutorActivo.precioPorHora;
+    const com   = sub * 0.10;
+    const demo  = {
+      id: 'r_' + Date.now(),
+      materia, fecha, hora,
+      duracionMinutos: mins,
+      nota, estado: 'pendiente',
+      precioTotal: parseFloat((sub+com).toFixed(2)),
+      tutor: { nombre: tutorActivo.nombre },
+      creadoEn: new Date().toISOString()
+    };
+    reservasData.unshift(demo);
+    cerrarModal();
+    renderReservas();
+    actualizarStats();
+    toast('¡Reserva creada! (modo demo) 🎉', 'success');
+    goTo('reservas');
+  }
+}
+
+// ─── Stats ───────────────────────────────────────────────────────────────
+function actualizarStats() {
+  document.getElementById('stat-tutores').textContent  = tutoresData.filter(t=>t.disponible).length;
+  document.getElementById('stat-reservas').textContent = reservasData.length;
+
+  const proxima = reservasData.find(r => r.estado === 'confirmada' || r.estado === 'pendiente');
+  if (proxima) {
+    document.getElementById('stat-proxima').textContent    = formatFecha(proxima.fecha);
+    document.getElementById('stat-proxima-sub').textContent = `${proxima.hora} — ${proxima.materia}`;
+  } else {
+    document.getElementById('stat-proxima').textContent    = 'Ninguna';
+    document.getElementById('stat-proxima-sub').textContent = 'Reserva tu primera sesión';
+  }
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────
+async function apiFetch(endpoint, method = 'GET', body = null) {
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const res  = await fetch(`${API}${endpoint}`, opts);
+  return res.json();
+}
+
+function mostrarAlerta(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function ocultarAlerta(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+let toastTimer;
+function toast(msg, tipo = '') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className   = `toast ${tipo}`;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function formatFecha(fecha) {
+  if (!fecha) return '—';
+  const [y,m,d] = fecha.split('-');
+  const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return `${d} ${meses[parseInt(m)-1]} ${y}`;
+}
+
+// Cerrar modal al hacer clic fuera
+document.getElementById('modal-reserva').addEventListener('click', function(e) {
+  if (e.target === this) cerrarModal();
+});
+</script>
+</body>
+</html>

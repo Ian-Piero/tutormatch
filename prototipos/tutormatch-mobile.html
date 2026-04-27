@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>TutorMatch — App Móvil</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f4f2ee;
+    --white: #ffffff;
+    --surface: #f9f8f6;
+    --border: #e8e4de;
+    --text: #1a1814;
+    --muted: #8a8680;
+    --accent: #1a47d6;
+    --accent-light: #eef1fc;
+    --accent2: #e8410a;
+    --green: #1a8a5a;
+    --green-light: #e8f5ee;
+    --yellow: #c87c00;
+    --yellow-light: #fff8e8;
+    --font: 'Nunito', sans-serif;
+    --r: 16px;
+    --r-sm: 10px;
+    --phone-w: 390px;
+    --phone-h: 780px;
+  }
+
+  body {
+    font-family: var(--font);
+    background: #ddd9d2;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px 40px;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .phone {
+    width: var(--phone-w);
+    background: var(--white);
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    height: var(--phone-h);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .status-bar {
+    background: var(--white);
+    padding: 14px 24px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .status-time { font-size: 15px; font-weight: 800; }
+  .status-icons { display: flex; gap: 5px; align-items: center; font-size: 13px; }
+
+  .screen {
+    flex: 1;
+    background: var(--bg);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: none;
+    flex-direction: column;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+  .screen.active { display: flex; }
+
+  .bottom-nav {
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 18px;
+  }
+  .nav-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 9.5px; font-weight: 600; color: var(--muted); cursor: pointer;
+    padding: 4px 0; transition: color 0.15s;
+  }
+  .nav-btn .ico { font-size: 20px; }
+  .nav-btn.active { color: var(--accent); }
+
+  .screen-header {
+    background: var(--white);
+    padding: 18px 20px 14px;
+    position: sticky; top: 0; z-index: 10;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .header-title { font-size: 22px; font-weight: 800; color: var(--text); }
+  .header-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .icon-btn { width: 38px; height: 38px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; }
+
+  .search-bar {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 10px 14px;
+  }
+  .search-icon { font-size: 15px; color: var(--muted); }
+  .search-bar input { flex: 1; border: none; background: transparent; font-family: var(--font); font-size: 14px; color: var(--text); outline: none; }
+  .search-bar input::placeholder { color: var(--muted); }
+
+  .chip-row { display: flex; gap: 8px; overflow-x: auto; padding: 0 16px 4px; scrollbar-width: none; }
+  .chip-row::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0; padding: 7px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    background: var(--white); border: 1.5px solid var(--border); color: var(--muted); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .section-label {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px 8px;
+  }
+  .section-label span { font-size: 16px; font-weight: 800; color: var(--text); }
+  .section-label a { font-size: 13px; font-weight: 600; color: var(--accent); cursor: pointer; }
+
+  .tutor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 12px 16px; }
+  .tutor-card {
+    background: var(--white); border-radius: var(--r); padding: 14px 12px;
+    display: flex; flex-direction: column; gap: 8px;
+    border: 1.5px solid var(--border); cursor: pointer; transition: box-shadow 0.15s;
+  }
+  .tutor-card:hover { box-shadow: 0 4px 20px rgba(26,71,214,0.12); border-color: var(--accent); }
+  .tutor-avatar {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 800; margin-bottom: 2px;
+  }
+  .av-1 { background: #e8f1fd; color: var(--accent); }
+  .av-2 { background: #fde8e8; color: var(--accent2); }
+  .av-3 { background: var(--green-light); color: var(--green); }
+  .av-4 { background: var(--yellow-light); color: var(--yellow); }
+  .av-5 { background: #f0e8fd; color: #7c3dd6; }
+  .av-6 { background: #e8fdfa; color: #0a8a7a; }
+  .tutor-name { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.2; }
+  .tutor-subject { font-size: 11.5px; color: var(--muted); font-weight: 500; }
+  .tutor-rate { display: flex; align-items: center; justify-content: space-between; }
+  .stars-small { color: #f5a623; font-size: 11px; }
+  .rating-val { font-size: 12px; font-weight: 700; color: var(--text); }
+  .price-tag { font-size: 13px; font-weight: 800; color: var(--accent); }
+  .price-tag span { font-size: 10px; font-weight: 500; color: var(--muted); }
+
+  .tutor-list { padding: 0 12px; display: flex; flex-direction: column; gap: 10px; }
+  .tutor-list-card {
+    background: var(--white); border-radius: var(--r); padding: 14px;
+    display: flex; align-items: center; gap: 14px; border: 1.5px solid var(--border); cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .tutor-list-card:hover { border-color: var(--accent); }
+  .tl-avatar { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; flex-shrink: 0; }
+  .tl-info { flex: 1; }
+  .tl-name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .tl-subject { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .tl-meta { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .mini-pill { font-size: 10.5px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+  .mp-blue { background: var(--accent-light); color: var(--accent); }
+  .mp-green { background: var(--green-light); color: var(--green); }
+  .tl-price { font-size: 16px; font-weight: 800; color: var(--text); text-align: right; flex-shrink: 0; }
+  .tl-price span { display: block; font-size: 10px; font-weight: 500; color: var(--muted); text-align: right; }
+
+  .booking-header { background: var(--white); padding: 50px 20px 24px; position: relative; }
+  .back-btn {
+    width: 36px; height: 36px; border-radius: 10px; background: var(--surface);
+    border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;
+    font-size: 16px; cursor: pointer; margin-bottom: 16px;
+  }
+  .tutor-profile { display: flex; gap: 14px; align-items: center; }
+  .tp-avatar { width: 64px; height: 64px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; flex-shrink: 0; }
+  .tp-name { font-size: 20px; font-weight: 800; color: var(--text); }
+  .tp-subject { font-size: 13px; color: var(--muted); margin-top: 3px; }
+  .tp-rating { display: flex; align-items: center; gap: 5px; margin-top: 6px; }
+  .tp-stars { color: #f5a623; font-size: 14px; }
+  .tp-reviews { font-size: 12px; color: var(--muted); }
+
+  .booking-body { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  .booking-body::-webkit-scrollbar { display: none; }
+
+  .book-section { background: var(--white); border-radius: var(--r); margin: 0 12px 12px; padding: 18px; }
+  .book-section-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+
+  .date-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .date-row::-webkit-scrollbar { display: none; }
+  .date-chip {
+    flex-shrink: 0; width: 52px; display: flex; flex-direction: column; align-items: center;
+    padding: 10px 0; border-radius: 12px; border: 1.5px solid var(--border);
+    cursor: pointer; transition: all 0.15s;
+  }
+  .date-chip .dd { font-size: 16px; font-weight: 800; color: var(--text); }
+  .date-chip .dm { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+  .date-chip.active { background: var(--accent); border-color: var(--accent); }
+  .date-chip.active .dd, .date-chip.active .dm { color: white; }
+
+  .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .time-slot {
+    padding: 10px; text-align: center; border-radius: 10px; border: 1.5px solid var(--border);
+    font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.15s;
+  }
+  .time-slot:hover { border-color: var(--accent); color: var(--accent); }
+  .time-slot.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+  .time-slot.disabled { color: var(--muted); background: var(--surface); cursor: not-allowed; }
+
+  .duration-row { display: flex; gap: 8px; }
+  .dur-chip {
+    flex: 1; padding: 10px; text-align: center; border-radius: 10px; border: 1.5px solid var(--border);
+    font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all 0.15s;
+  }
+  .dur-chip.active { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+  .note-input {
+    width: 100%; height: 70px; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; font-family: var(--font); font-size: 13px; color: var(--text);
+    resize: none; outline: none; background: var(--surface);
+  }
+  .note-input:focus { border-color: var(--accent); }
+
+  .price-summary { display: flex; flex-direction: column; gap: 10px; }
+  .ps-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--muted); }
+  .ps-row.total { color: var(--text); font-weight: 800; font-size: 16px; padding-top: 10px; border-top: 1px solid var(--border); }
+
+  .book-footer { background: var(--white); padding: 14px 16px 28px; border-top: 1px solid var(--border); }
+  .book-btn {
+    width: 100%; height: 52px; border-radius: 16px; background: var(--accent); color: white;
+    font-family: var(--font); font-size: 16px; font-weight: 800; border: none; cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .book-btn:hover { opacity: 0.9; }
+
+  .reservas-list { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .reserva-card { background: var(--white); border-radius: var(--r); padding: 16px; border: 1.5px solid var(--border); cursor: pointer; }
+  .res-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .res-avatar { width: 44px; height: 44px; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; }
+  .res-title { font-size: 15px; font-weight: 700; color: var(--text); }
+  .res-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .res-status { margin-left: auto; }
+  .status-pill { padding: 4px 12px; border-radius: 20px; font-size: 11.5px; font-weight: 700; }
+  .sp-green { background: var(--green-light); color: var(--green); }
+  .sp-blue  { background: var(--accent-light); color: var(--accent); }
+  .sp-yellow{ background: var(--yellow-light); color: var(--yellow); }
+  .sp-red   { background: #fde8e8; color: var(--accent2); }
+  .res-details { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0; padding-top: 12px; border-top: 1px solid var(--border); }
+  .res-detail-item { display: flex; flex-direction: column; gap: 2px; }
+  .res-detail-item:not(:last-child) { padding-right: 10px; border-right: 1px solid var(--border); margin-right: 10px; }
+  .rd-label { font-size: 10.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+  .rd-val { font-size: 13px; font-weight: 700; color: var(--text); }
+  .res-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .res-btn { flex: 1; padding: 10px; border-radius: 10px; font-family: var(--font); font-size: 13px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: transparent; color: var(--text); transition: all 0.15s; text-align: center; }
+  .res-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+
+  .home-greeting { padding: 20px 16px 10px; }
+  .home-hi { font-size: 22px; font-weight: 800; color: var(--text); }
+  .home-hi span { color: var(--accent); }
+  .home-tagline { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  .quick-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 12px 4px; }
+  .qs-card { background: var(--accent); border-radius: 14px; padding: 16px; color: white; }
+  .qs-card:nth-child(2) { background: var(--text); }
+  .qs-label { font-size: 11px; font-weight: 600; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.5px; }
+  .qs-val { font-size: 26px; font-weight: 800; margin-top: 4px; }
+  .qs-sub { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+  .coming-up { background: var(--white); border-radius: var(--r); margin: 4px 12px 0; padding: 16px; border: 1.5px solid var(--border); }
+  .cu-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .cu-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .cu-item { display: flex; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .cu-item:last-child { border-bottom: none; }
+  .cu-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .cu-text { flex: 1; }
+  .cu-name { font-size: 13.5px; font-weight: 700; color: var(--text); }
+  .cu-when { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+  .cu-join { font-size: 12px; font-weight: 700; color: var(--accent); }
+
+  .profile-header { background: var(--white); padding: 20px 16px 24px; display: flex; flex-direction: column; align-items: center; gap: 12px; border-bottom: 1px solid var(--border); }
+  .profile-avatar { width: 72px; height: 72px; border-radius: 22px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800; color: var(--accent); }
+  .profile-name { font-size: 20px; font-weight: 800; color: var(--text); }
+  .profile-email { font-size: 13px; color: var(--muted); }
+  .profile-menu { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .pm-item { background: var(--white); border-radius: 14px; padding: 16px; display: flex; align-items: center; gap: 14px; border: 1.5px solid var(--border); cursor: pointer; }
+  .pm-icon { font-size: 20px; width: 36px; }
+  .pm-label { flex: 1; font-size: 14px; font-weight: 600; color: var(--text); }
+  .pm-arrow { color: var(--muted); }
+
+  .confirm-overlay {
+    position: absolute; inset: 0; background: rgba(255,255,255,0.97);
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 50; padding: 24px; text-align: center;
+  }
+  .confirm-overlay.show { display: flex; }
+  .confirm-icon { font-size: 56px; margin-bottom: 16px; }
+  .confirm-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  .confirm-sub { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 24px; }
+  .confirm-btn { width: 100%; height: 52px; border-radius: 16px; background: var(--accent); color: white; font-family: var(--font); font-size: 16px; font-weight: 800; border: none; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<!-- ════ PHONE 1: INICIO / BÚSQUEDA / RESERVAS / PERFIL ════ -->
+<div class="phone">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">📶 🔋</div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen active" id="p1-home">
+    <div class="home-greeting">
+      <div class="home-hi">Hola, <span>Carlos</span> 👋</div>
+      <div class="home-tagline">¿Qué quieres aprender hoy?</div>
+    </div>
+    <div class="quick-stats">
+      <div class="qs-card">
+        <div class="qs-label">Próxima sesión</div>
+        <div class="qs-val">Hoy</div>
+        <div class="qs-sub">4:00 PM · Rafael G.</div>
+      </div>
+      <div class="qs-card">
+        <div class="qs-label">Sesiones totales</div>
+        <div class="qs-val">23</div>
+        <div class="qs-sub">este semestre</div>
+      </div>
+    </div>
+    <div class="coming-up" style="margin-top:12px;">
+      <div class="cu-header">
+        <span class="cu-title">Próximas tutorías</span>
+        <span style="font-size:12px;font-weight:700;color:var(--accent);cursor:pointer" onclick="p1nav('reservas',null)">Ver todas</span>
+      </div>
+      <div class="cu-item">
+        <div class="cu-dot" style="background:var(--accent)"></div>
+        <div class="cu-text">
+          <div class="cu-name">Cálculo Diferencial</div>
+          <div class="cu-when">Hoy · 4:00 PM · Rafael Gómez</div>
+        </div>
+        <span class="cu-join">Unirse</span>
+      </div>
+      <div class="cu-item">
+        <div class="cu-dot" style="background:#7c3dd6"></div>
+        <div class="cu-text">
+          <div class="cu-name">Python para Data</div>
+          <div class="cu-when">Mañana · 10:00 AM · María L.</div>
+        </div>
+        <span class="cu-join">→</span>
+      </div>
+    </div>
+    <div class="section-label">
+      <span>Tutores destacados</span>
+      <a onclick="p1nav('buscar',null)">Ver todos →</a>
+    </div>
+    <div class="tutor-grid">
+      <div class="tutor-card">
+        <div class="tutor-avatar av-1">RG</div>
+        <div class="tutor-name">Rafael Gómez</div>
+        <div class="tutor-subject">Cálculo · Álgebra</div>
+        <div class="tutor-rate"><span class="stars-small">★★★★★</span><span class="rating-val">4.9</span></div>
+        <div class="price-tag">S/40 <span>/ hora</span></div>
+      </div>
+      <div class="tutor-card">
+        <div class="tutor-avatar av-3">ML</div>
+        <div class="tutor-name">María López</div>
+        <div class="tutor-subject">Python · Data</div>
+        <div class="tutor-rate"><span class="stars-small">★★★★★</span><span class="rating-val">4.8</span></div>
+        <div class="price-tag">S/35 <span>/ hora</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUSCAR -->
+  <div class="screen" id="p1-buscar">
+    <div class="screen-header">
+      <div class="header-top">
+        <div><div class="header-title">Buscar tutor</div><div class="header-sub">184 tutores disponibles</div></div>
+        <div class="icon-btn">⚙</div>
+      </div>
+      <div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="Materia, nombre..."></div>
+    </div>
+    <div class="chip-row" style="padding-top:10px;">
+      <div class="chip active">Todos</div><div class="chip">Matemáticas</div><div class="chip">Programación</div><div class="chip">Física</div><div class="chip">Inglés</div>
+    </div>
+    <div style="height:10px;"></div>
+    <div class="tutor-list">
+      <div class="tutor-list-card" onclick="p1nav('reservar',null)">
+        <div class="tl-avatar av-1">RG</div>
+        <div class="tl-info">
+          <div class="tl-name">Rafael Gómez</div>
+          <div class="tl-subject">Cálculo · Álgebra Lineal · Estadística</div>
+          <div class="tl-meta"><span class="mini-pill mp-blue">⭐ 4.9 (142)</span><span class="mini-pill mp-green">Disponible</span></div>
+        </div>
+        <div class="tl-price">S/40<span>por hora</span></div>
+      </div>
+      <div class="tutor-list-card">
+        <div class="tl-avatar av-3">ML</div>
+        <div class="tl-info">
+          <div class="tl-name">María López</div>
+          <div class="tl-subject">Python · Machine Learning · SQL</div>
+          <div class="tl-meta"><span class="mini-pill mp-blue">⭐ 4.8 (98)</span><span class="mini-pill mp-green">Disponible</span></div>
+        </div>
+        <div class="tl-price">S/35<span>por hora</span></div>
+      </div>
+      <div class="tutor-list-card">
+        <div class="tl-avatar av-2">JP</div>
+        <div class="tl-info">
+          <div class="tl-name">Juan Pérez</div>
+          <div class="tl-subject">Física · Termodinámica · Mecánica</div>
+          <div class="tl-meta"><span class="mini-pill mp-blue">⭐ 4.7 (77)</span><span class="mini-pill" style="background:#fff3e0;color:var(--yellow);">Ocupado hoy</span></div>
+        </div>
+        <div class="tl-price">S/30<span>por hora</span></div>
+      </div>
+      <div class="tutor-list-card">
+        <div class="tl-avatar av-5">KR</div>
+        <div class="tl-info">
+          <div class="tl-name">Karen Ríos</div>
+          <div class="tl-subject">Inglés · Francés · Redacción</div>
+          <div class="tl-meta"><span class="mini-pill mp-blue">⭐ 4.9 (201)</span><span class="mini-pill mp-green">Disponible</span></div>
+        </div>
+        <div class="tl-price">S/28<span>por hora</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESERVAR -->
+  <div class="screen" id="p1-reservar" style="flex-direction:column;">
+    <div class="booking-header">
+      <div class="back-btn" onclick="p1nav('buscar',null)">←</div>
+      <div class="tutor-profile">
+        <div class="tp-avatar av-1">RG</div>
+        <div>
+          <div class="tp-name">Rafael Gómez</div>
+          <div class="tp-subject">Cálculo Diferencial · Álgebra</div>
+          <div class="tp-rating"><span class="tp-stars">★★★★★</span><span class="rating-val" style="font-size:13px;">4.9</span><span class="tp-reviews">(142 reseñas)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="booking-body">
+      <div style="height:10px;"></div>
+      <div class="book-section">
+        <div class="book-section-title">Selecciona la fecha</div>
+        <div class="date-row">
+          <div class="date-chip"><div class="dd">26</div><div class="dm">Abr</div></div>
+          <div class="date-chip active"><div class="dd">27</div><div class="dm">Abr</div></div>
+          <div class="date-chip"><div class="dd">28</div><div class="dm">Abr</div></div>
+          <div class="date-chip"><div class="dd">29</div><div class="dm">Abr</div></div>
+          <div class="date-chip"><div class="dd">30</div><div class="dm">Abr</div></div>
+          <div class="date-chip"><div class="dd">1</div><div class="dm">May</div></div>
+        </div>
+      </div>
+      <div class="book-section">
+        <div class="book-section-title">Selecciona la hora</div>
+        <div class="time-grid">
+          <div class="time-slot disabled">8:00 AM</div>
+          <div class="time-slot">9:00 AM</div>
+          <div class="time-slot">10:00 AM</div>
+          <div class="time-slot active">11:00 AM</div>
+          <div class="time-slot">2:00 PM</div>
+          <div class="time-slot">4:00 PM</div>
+          <div class="time-slot">5:00 PM</div>
+          <div class="time-slot disabled">6:00 PM</div>
+          <div class="time-slot">7:00 PM</div>
+        </div>
+      </div>
+      <div class="book-section">
+        <div class="book-section-title">Duración</div>
+        <div class="duration-row">
+          <div class="dur-chip">30 min</div>
+          <div class="dur-chip active">60 min</div>
+          <div class="dur-chip">90 min</div>
+          <div class="dur-chip">120 min</div>
+        </div>
+      </div>
+      <div class="book-section">
+        <div class="book-section-title">Nota para el tutor (opcional)</div>
+        <textarea class="note-input" placeholder="Ej. Necesito repasar integrales por partes y series de Taylor..."></textarea>
+      </div>
+      <div class="book-section">
+        <div class="book-section-title">Resumen de pago</div>
+        <div class="price-summary">
+          <div class="ps-row"><span>Tarifa tutor (60 min)</span><span>S/40.00</span></div>
+          <div class="ps-row"><span>Comisión plataforma</span><span>S/4.00</span></div>
+          <div class="ps-row total"><span>Total</span><span>S/44.00</span></div>
+        </div>
+      </div>
+      <div style="height:80px;"></div>
+    </div>
+    <div class="book-footer">
+      <button class="book-btn" onclick="showConfirm()">Confirmar reserva · S/44.00</button>
+    </div>
+    <div class="confirm-overlay" id="confirm-overlay">
+      <div class="confirm-icon">✅</div>
+      <div class="confirm-title">¡Reserva confirmada!</div>
+      <div class="confirm-sub">Tu sesión con <strong>Rafael Gómez</strong> está agendada para el<br><strong>27 de abril a las 11:00 AM</strong>.<br>Recibirás un recordatorio 30 min antes.</div>
+      <button class="confirm-btn" onclick="p1nav('reservas',null);hideConfirm()">Ver mis reservas</button>
+    </div>
+  </div>
+
+  <!-- RESERVAS -->
+  <div class="screen" id="p1-reservas">
+    <div class="screen-header">
+      <div class="header-top"><div><div class="header-title">Mis reservas</div><div class="header-sub">4 sesiones este mes</div></div></div>
+      <div class="chip-row" style="padding:0;">
+        <div class="chip active">Todas</div><div class="chip">Próximas</div><div class="chip">Completadas</div><div class="chip">Canceladas</div>
+      </div>
+    </div>
+    <div class="reservas-list">
+      <div class="reserva-card">
+        <div class="res-header">
+          <div class="res-avatar av-1">RG</div>
+          <div><div class="res-title">Cálculo Diferencial</div><div class="res-sub">con Rafael Gómez</div></div>
+          <div class="res-status"><span class="status-pill sp-blue">Próxima</span></div>
+        </div>
+        <div class="res-details">
+          <div class="res-detail-item"><div class="rd-label">Fecha</div><div class="rd-val">27 Abr</div></div>
+          <div class="res-detail-item"><div class="rd-label">Hora</div><div class="rd-val">11:00 AM</div></div>
+          <div class="res-detail-item"><div class="rd-label">Duración</div><div class="rd-val">60 min</div></div>
+        </div>
+        <div class="res-actions"><button class="res-btn">Cancelar</button><button class="res-btn primary">Unirse</button></div>
+      </div>
+      <div class="reserva-card">
+        <div class="res-header">
+          <div class="res-avatar av-3">ML</div>
+          <div><div class="res-title">Python para Data</div><div class="res-sub">con María López</div></div>
+          <div class="res-status"><span class="status-pill sp-blue">Próxima</span></div>
+        </div>
+        <div class="res-details">
+          <div class="res-detail-item"><div class="rd-label">Fecha</div><div class="rd-val">28 Abr</div></div>
+          <div class="res-detail-item"><div class="rd-label">Hora</div><div class="rd-val">10:00 AM</div></div>
+          <div class="res-detail-item"><div class="rd-label">Duración</div><div class="rd-val">90 min</div></div>
+        </div>
+        <div class="res-actions"><button class="res-btn">Cancelar</button><button class="res-btn primary">Unirse</button></div>
+      </div>
+      <div class="reserva-card">
+        <div class="res-header">
+          <div class="res-avatar av-1">RG</div>
+          <div><div class="res-title">Álgebra Lineal</div><div class="res-sub">con Rafael Gómez</div></div>
+          <div class="res-status"><span class="status-pill sp-green">Completada</span></div>
+        </div>
+        <div class="res-details">
+          <div class="res-detail-item"><div class="rd-label">Fecha</div><div class="rd-val">20 Abr</div></div>
+          <div class="res-detail-item"><div class="rd-label">Hora</div><div class="rd-val">4:00 PM</div></div>
+          <div class="res-detail-item"><div class="rd-label">Duración</div><div class="rd-val">60 min</div></div>
+        </div>
+        <div class="res-actions"><button class="res-btn primary">Calificar ⭐</button></div>
+      </div>
+      <div class="reserva-card">
+        <div class="res-header">
+          <div class="res-avatar av-2">JP</div>
+          <div><div class="res-title">Física General</div><div class="res-sub">con Juan Pérez</div></div>
+          <div class="res-status"><span class="status-pill sp-red">Cancelada</span></div>
+        </div>
+        <div class="res-details">
+          <div class="res-detail-item"><div class="rd-label">Fecha</div><div class="rd-val">18 Abr</div></div>
+          <div class="res-detail-item"><div class="rd-label">Hora</div><div class="rd-val">3:00 PM</div></div>
+          <div class="res-detail-item"><div class="rd-label">Duración</div><div class="rd-val">45 min</div></div>
+        </div>
+        <div class="res-actions"><button class="res-btn primary">Reservar de nuevo</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL -->
+  <div class="screen" id="p1-perfil">
+    <div class="profile-header">
+      <div class="profile-avatar">CM</div>
+      <div class="profile-name">Carlos Mendoza</div>
+      <div class="profile-email">carlos@uni.edu</div>
+      <div style="display:flex;gap:24px;margin-top:8px;text-align:center;">
+        <div><div style="font-size:20px;font-weight:800;color:var(--accent)">23</div><div style="font-size:11px;color:var(--muted);font-weight:600">Sesiones</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:var(--accent)">5</div><div style="font-size:11px;color:var(--muted);font-weight:600">Tutores</div></div>
+        <div><div style="font-size:20px;font-weight:800;color:var(--accent)">4.8⭐</div><div style="font-size:11px;color:var(--muted);font-weight:600">Mi rating</div></div>
+      </div>
+    </div>
+    <div class="profile-menu">
+      <div class="pm-item"><div class="pm-icon">📚</div><div class="pm-label">Historial de sesiones</div><div class="pm-arrow">›</div></div>
+      <div class="pm-item"><div class="pm-icon">💳</div><div class="pm-label">Métodos de pago</div><div class="pm-arrow">›</div></div>
+      <div class="pm-item"><div class="pm-icon">🔔</div><div class="pm-label">Notificaciones</div><div class="pm-arrow">›</div></div>
+      <div class="pm-item"><div class="pm-icon">🔒</div><div class="pm-label">Privacidad y seguridad</div><div class="pm-arrow">›</div></div>
+      <div class="pm-item"><div class="pm-icon">❓</div><div class="pm-label">Centro de ayuda</div><div class="pm-arrow">›</div></div>
+      <div class="pm-item"><div class="pm-icon">🚪</div><div class="pm-label" style="color:var(--accent2)">Cerrar sesión</div></div>
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <div class="nav-btn active" id="p1-nav-home" onclick="p1nav('home',this)"><span class="ico">🏠</span>Inicio</div>
+    <div class="nav-btn" id="p1-nav-buscar" onclick="p1nav('buscar',this)"><span class="ico">🔍</span>Buscar</div>
+    <div class="nav-btn" id="p1-nav-reservas" onclick="p1nav('reservas',this)"><span class="ico">📅</span>Reservas</div>
+    <div class="nav-btn" id="p1-nav-perfil" onclick="p1nav('perfil',this)"><span class="ico">👤</span>Perfil</div>
+  </div>
+</div>
+
+<!-- ════ PHONE 2: PANTALLA RESERVAR STANDALONE ════ -->
+<div class="phone">
+  <div class="status-bar">
+    <span class="status-time">9:41</span>
+    <div class="status-icons">📶 🔋</div>
+  </div>
+  <div class="screen active" style="flex-direction:column;">
+    <div class="booking-header">
+      <div class="back-btn">←</div>
+      <div class="tutor-profile">
+        <div class="tp-avatar av-5">KR</div>
+        <div>
+          <div class="tp-name">Karen Ríos</div>
+          <div class="tp-subject">Inglés B2 · Conversación · IELTS</div>
+          <div class="tp-rating"><span class="tp-stars">★★★★★</span><span class="rating-val" style="font-size:13px;">4.9</span><span class="tp-reviews">(201 reseñas)</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="booking-body">
+      <div style="height:10px;"></div>
+      <div class="book-section">
+        <div class="book-section-title">Selecciona la fecha</div>
+        <div class="date-row">
+          <div class="date-chip"><div class="dd">26</div><div class="dm">Abr</div></div>
+          <div class="date-chip"><div class="dd">27</div><div class="dm">Abr</div></div>
+          <div class="date-chip active"><div class="dd">28</div><div class="dm">Abr</div></div>
+          <div class="date-chip"><div class="dd">29</div><div class="dm">Abr</div></div>
+          <div class="date-chip"><div class="dd">30</div><div class="dm">Abr</div></div>
+        </div>
+      </div>
+      <div class="book-section">
+        <div class="book-section-title">Selecciona la hora</div>
+        <div class="time-grid">
+          <div class="time-slot">8:00 AM</div>
+          <div class="time-slot active">9:00 AM</div>
+          <div class="time-slot">10:00 AM</div>
+          <div class="time-slot disabled">2:00 PM</div>
+          <div class="time-slot">4:00 PM</div>
+          <div class="time-slot">6:00 PM</div>
+        </div>
+      </div>
+      <div class="book-section">
+        <div class="book-section-title">Duración</div>
+        <div class="duration-row">
+          <div class="dur-chip">30 min</div>
+          <div class="dur-chip active">60 min</div>
+          <div class="dur-chip">90 min</div>
+        </div>
+      </div>
+      <div class="book-section">
+        <div class="book-section-title">Nota para el tutor</div>
+        <textarea class="note-input" placeholder="Ej. Quiero practicar Speaking para mi examen IELTS del próximo mes..."></textarea>
+      </div>
+      <div class="book-section">
+        <div class="book-section-title">Resumen de pago</div>
+        <div class="price-summary">
+          <div class="ps-row"><span>Tarifa tutor (60 min)</span><span>S/28.00</span></div>
+          <div class="ps-row"><span>Comisión plataforma</span><span>S/2.80</span></div>
+          <div class="ps-row total"><span>Total</span><span>S/30.80</span></div>
+        </div>
+      </div>
+      <div style="height:80px;"></div>
+    </div>
+    <div class="book-footer">
+      <button class="book-btn">Confirmar reserva · S/30.80</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function p1nav(screen, navEl) {
+  ['home','buscar','reservar','reservas','perfil'].forEach(s => {
+    const el = document.getElementById('p1-' + s);
+    if (el) el.classList.remove('active');
+  });
+  document.getElementById('p1-' + screen).classList.add('active');
+  const navMap = {home:'p1-nav-home', buscar:'p1-nav-buscar', reservas:'p1-nav-reservas', perfil:'p1-nav-perfil'};
+  if (navMap[screen]) {
+    document.querySelectorAll('.bottom-nav .nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(navMap[screen]).classList.add('active');
+  }
+}
+function showConfirm() { document.getElementById('confirm-overlay').classList.add('show'); }
+function hideConfirm() { document.getElementById('confirm-overlay').classList.remove('show'); }
+
+document.querySelectorAll('.chip').forEach(c => {
+  c.addEventListener('click', function() {
+    this.closest('.chip-row').querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+document.querySelectorAll('.time-slot:not(.disabled)').forEach(s => {
+  s.addEventListener('click', function() {
+    this.closest('.time-grid').querySelectorAll('.time-slot').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+document.querySelectorAll('.dur-chip').forEach(d => {
+  d.addEventListener('click', function() {
+    this.closest('.duration-row').querySelectorAll('.dur-chip').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+document.querySelectorAll('.date-chip').forEach(d => {
+  d.addEventListener('click', function() {
+    this.closest('.date-row').querySelectorAll('.date-chip').forEach(x => x.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
