@@ -59,7 +59,7 @@ Formato:
 
 ---
 
-## Historial de commits bien organizado (ejemplo)
+## Historial de commits bien organizado 
 
 ```
 git log --oneline
