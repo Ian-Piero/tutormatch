@@ -769,6 +769,139 @@ body {
   .auth-card { padding: 28px 20px; }
 }
 
+
+/* ─── Tutor panel específico ─────────────────────────────────────────────── */
+.solicitud-card {
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1.5px solid var(--border);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.2s;
+}
+.solicitud-card:hover { border-color: var(--accent); }
+
+.sol-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; }
+.sol-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800; flex-shrink: 0;
+  background: var(--accent-l); color: var(--accent);
+}
+.sol-info { flex: 1; }
+.sol-nombre { font-size: 15px; font-weight: 800; }
+.sol-materia { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.sol-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 10px;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.sol-meta-item .label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+.sol-meta-item .value { font-size: 13.5px; font-weight: 700; margin-top: 3px; }
+.sol-nota {
+  font-size: 13px; color: var(--muted); font-style: italic;
+  padding: 10px 14px; background: var(--surface);
+  border-left: 3px solid var(--accent); border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  margin-bottom: 14px;
+}
+.sol-actions { display: flex; gap: 10px; }
+.btn-accept { background: var(--green); color: white; border-color: var(--green); flex: 1; }
+.btn-accept:hover { background: #156b3d; color: white; }
+.btn-reject { color: var(--red); border-color: var(--red); flex: 1; }
+.btn-reject:hover { background: var(--red-l); }
+
+/* Disponibilidad toggle */
+.disp-toggle {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1.5px solid var(--border);
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.disp-toggle:hover { border-color: var(--accent); }
+.toggle-switch {
+  width: 48px; height: 26px;
+  border-radius: 13px;
+  background: var(--border);
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.toggle-switch.on { background: var(--green); }
+.toggle-knob {
+  width: 20px; height: 20px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px; left: 3px;
+  transition: left 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch.on .toggle-knob { left: 25px; }
+.disp-label { font-size: 15px; font-weight: 700; }
+.disp-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* Horarios chips */
+.horario-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.horario-chip {
+  padding: 6px 14px;
+  background: var(--accent-l);
+  color: var(--accent);
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.horario-chip.remove { background: var(--red-l); color: var(--red); }
+
+/* Perfil editor */
+.perfil-form .form-group { margin-bottom: 18px; }
+.materias-input-wrap { display: flex; gap: 8px; }
+.materias-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.materia-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent-l); color: var(--accent);
+  padding: 5px 12px; border-radius: 20px;
+  font-size: 12.5px; font-weight: 700;
+}
+.materia-tag button {
+  background: none; border: none; cursor: pointer;
+  color: var(--accent); font-size: 14px; padding: 0; line-height: 1;
+}
+.materia-tag button:hover { color: var(--red); }
+
+/* Stats tutor */
+.tutor-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.ts-card {
+  background: var(--white);
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+}
+.ts-val { font-size: 28px; font-weight: 800; font-family: var(--mono); }
+.ts-lbl { font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-top: 4px; }
+
+/* Badge con número en nav */
+.nav-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px;
+  background: var(--red); color: white;
+  border-radius: 9px; font-size: 10px; font-weight: 800;
+  padding: 0 5px; margin-left: auto;
+}
+
 /* ─── Misc helpers ─────────────────────────────────────────────────────── */
 .text-muted { color: var(--muted); }
 .mt-16 { margin-top: 16px; }
@@ -807,7 +940,9 @@ body {
         <input class="form-input" type="password" id="login-pass" placeholder="••••••••" value="123456">
       </div>
       <p style="font-size:12px;color:var(--muted);margin-bottom:18px;">
-        Demo: <strong>carlos@uni.edu</strong> / <strong>123456</strong>
+        Demo estudiante: <strong>carlos@uni.edu</strong> / <strong>123456</strong><br>
+        Demo tutor: <strong>rafael@tutores.pe</strong> / <strong>tutor123</strong><br>
+        Demo admin: <strong>admin@tutormatch.pe</strong> / <strong>admin123</strong>
       </p>
       <button class="btn btn-primary" onclick="login()">Entrar</button>
     </div>
@@ -854,11 +989,23 @@ body {
         <div class="nav-item active" id="nav-inicio" onclick="goTo('inicio')">
           <span class="nav-icon">🏠</span> Inicio
         </div>
-        <div class="nav-item" id="nav-tutores" onclick="goTo('tutores')">
-          <span class="nav-icon">🔍</span> Buscar tutores
-        </div>
-        <div class="nav-item" id="nav-reservas" onclick="goTo('reservas')">
+        <div class="nav-item student-only" id="nav-reservas" onclick="goTo('reservas')">
           <span class="nav-icon">📅</span> Mis reservas
+        </div>
+        <!-- Tutor only nav items (hidden by default) -->
+        <div class="nav-item tutor-only" id="nav-solicitudes" onclick="goTo('solicitudes')" style="display:none">
+          <span class="nav-icon">📬</span> Solicitudes
+          <span class="nav-badge" id="badge-solicitudes" style="display:none">0</span>
+        </div>
+        <div class="nav-item tutor-only" id="nav-historial" onclick="goTo('historial')" style="display:none">
+          <span class="nav-icon">📋</span> Historial
+        </div>
+        <div class="nav-item tutor-only" id="nav-mi-perfil" onclick="goTo('mi-perfil')" style="display:none">
+          <span class="nav-icon">✏️</span> Mi perfil
+        </div>
+        <!-- Student only nav items -->
+        <div class="nav-item student-only" id="nav-tutores" onclick="goTo('tutores')">
+          <span class="nav-icon">🔍</span> Buscar tutores
         </div>
       </nav>
       <div class="sidebar-user">
@@ -892,35 +1039,83 @@ body {
 
         <!-- ── SECCIÓN: INICIO ──────────────────────────── -->
         <div class="section active" id="sec-inicio">
-          <div class="stats-grid" id="stats-grid">
-            <div class="stat-card">
-              <div class="stat-label">Tutores disponibles</div>
-              <div class="stat-value" style="color:var(--accent)" id="stat-tutores">—</div>
-              <div class="stat-sub">listos para ayudarte</div>
+
+          <!-- Vista ESTUDIANTE -->
+          <div id="inicio-estudiante">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-label">Tutores disponibles</div>
+                <div class="stat-value" style="color:var(--accent)" id="stat-tutores">—</div>
+                <div class="stat-sub">listos para ayudarte</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Mis reservas</div>
+                <div class="stat-value" style="color:var(--green)" id="stat-reservas">—</div>
+                <div class="stat-sub">sesiones agendadas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Próxima sesión</div>
+                <div class="stat-value" style="color:var(--yellow);font-size:18px;padding-top:8px;" id="stat-proxima">—</div>
+                <div class="stat-sub" id="stat-proxima-sub"></div>
+              </div>
             </div>
-            <div class="stat-card">
-              <div class="stat-label">Mis reservas</div>
-              <div class="stat-value" style="color:var(--green)" id="stat-reservas">—</div>
-              <div class="stat-sub">sesiones agendadas</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-label">Próxima sesión</div>
-              <div class="stat-value" style="color:var(--yellow);font-size:18px;padding-top:8px;" id="stat-proxima">—</div>
-              <div class="stat-sub" id="stat-proxima-sub"></div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Tutores destacados</span>
+                <button class="btn btn-sm" onclick="goTo('tutores')">Ver todos →</button>
+              </div>
+              <div class="card-body">
+                <div class="tutores-grid" id="inicio-tutores">
+                  <div class="loading"><div class="spinner"></div> Cargando...</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Tutores destacados</span>
-              <button class="btn btn-sm" onclick="goTo('tutores')">Ver todos →</button>
+          <!-- Vista TUTOR -->
+          <div id="inicio-tutor" style="display:none;">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-label">Solicitudes pendientes</div>
+                <div class="stat-value" style="color:var(--red)" id="tstat-pendientes">—</div>
+                <div class="stat-sub">esperando tu respuesta</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Sesiones confirmadas</div>
+                <div class="stat-value" style="color:var(--accent)" id="tstat-confirmadas">—</div>
+                <div class="stat-sub">próximas a realizarse</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Completadas</div>
+                <div class="stat-value" style="color:var(--green)" id="tstat-completadas">—</div>
+                <div class="stat-sub">sesiones finalizadas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Ingresos acumulados</div>
+                <div class="stat-value" style="color:var(--yellow);font-size:22px;padding-top:6px;" id="tstat-ingresos">—</div>
+                <div class="stat-sub">después de comisión</div>
+              </div>
             </div>
-            <div class="card-body">
-              <div class="tutores-grid" id="inicio-tutores">
+            <div class="card" style="margin-bottom:18px;">
+              <div class="card-header">
+                <span class="card-title">Próximas sesiones confirmadas</span>
+                <button class="btn btn-sm" onclick="goTo('historial')">Ver historial →</button>
+              </div>
+              <div class="card-body" id="tutor-proximas-list">
+                <div class="loading"><div class="spinner"></div> Cargando...</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Nuevas solicitudes</span>
+                <button class="btn btn-sm" onclick="goTo('solicitudes')">Ver todas →</button>
+              </div>
+              <div class="card-body" id="tutor-solicitudes-preview">
                 <div class="loading"><div class="spinner"></div> Cargando...</div>
               </div>
             </div>
           </div>
+
         </div>
 
         <!-- ── SECCIÓN: TUTORES ────────────────────────── -->
@@ -954,6 +1149,116 @@ body {
           </div>
         </div>
 
+
+        <!-- ── SECCIÓN: SOLICITUDES (tutor) ───────────────── -->
+        <div class="section" id="sec-solicitudes">
+          <div class="flex-between" style="margin-bottom:20px;">
+            <h2 style="font-size:16px;font-weight:800;">Solicitudes pendientes</h2>
+            <span id="sol-count" style="font-size:13px;color:var(--muted);font-weight:600;"></span>
+          </div>
+          <div id="solicitudes-list">
+            <div class="loading"><div class="spinner"></div> Cargando solicitudes...</div>
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN: HISTORIAL (tutor) ─────────────────── -->
+        <div class="section" id="sec-historial">
+          <div class="flex-between" style="margin-bottom:20px;">
+            <h2 style="font-size:16px;font-weight:800;">Historial de sesiones</h2>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;" id="filtros-historial">
+              <button class="btn btn-sm active-filter" onclick="filtrarHistorial('todas',this)">Todas</button>
+              <button class="btn btn-sm" onclick="filtrarHistorial('pendiente',this)">Pendientes</button>
+              <button class="btn btn-sm" onclick="filtrarHistorial('confirmada',this)">Confirmadas</button>
+              <button class="btn btn-sm" onclick="filtrarHistorial('completada',this)">Completadas</button>
+              <button class="btn btn-sm" onclick="filtrarHistorial('cancelada',this)">Canceladas</button>
+            </div>
+          </div>
+          <div class="reservas-list" id="historial-list">
+            <div class="loading"><div class="spinner"></div> Cargando historial...</div>
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN: MI PERFIL (tutor) ─────────────────── -->
+        <div class="section" id="sec-mi-perfil">
+          <div style="max-width:600px;">
+
+            <!-- Disponibilidad toggle -->
+            <div class="disp-toggle" onclick="toggleDisponibilidad()" id="disp-toggle-card">
+              <div>
+                <div class="disp-label" id="disp-label">Disponible para sesiones</div>
+                <div class="disp-sub" id="disp-sub">Los estudiantes pueden reservar contigo</div>
+              </div>
+              <div class="toggle-switch on" id="disp-switch">
+                <div class="toggle-knob"></div>
+              </div>
+            </div>
+
+            <!-- Stats rápidas -->
+            <div class="tutor-stats-grid" id="tutor-stats-grid">
+              <div class="ts-card">
+                <div class="ts-val" id="ts-completadas" style="color:var(--green)">—</div>
+                <div class="ts-lbl">Sesiones completadas</div>
+              </div>
+              <div class="ts-card">
+                <div class="ts-val" id="ts-ingresos" style="color:var(--accent)">—</div>
+                <div class="ts-lbl">Ingresos totales</div>
+              </div>
+              <div class="ts-card">
+                <div class="ts-val" id="ts-rating" style="color:var(--yellow)">—</div>
+                <div class="ts-lbl">Rating promedio</div>
+              </div>
+            </div>
+
+            <!-- Formulario de perfil -->
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Editar mi perfil</span>
+              </div>
+              <div class="card-body perfil-form">
+                <div class="alert alert-error" id="perfil-alert"></div>
+                <div class="alert" id="perfil-ok" style="background:var(--green-l);color:var(--green);border:1px solid #b9e6cc;"></div>
+
+                <div class="form-group">
+                  <label class="form-label">Biografía</label>
+                  <textarea class="form-input" id="perfil-bio" rows="3"
+                    style="height:auto;padding:10px 14px;resize:vertical;"
+                    placeholder="Describe tu experiencia y metodología..."></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Materias que enseñas</label>
+                  <div class="materias-input-wrap">
+                    <input class="form-input" type="text" id="materia-nueva"
+                      placeholder="Ej. Álgebra Lineal" style="flex:1;">
+                    <button class="btn" onclick="agregarMateria()">+ Agregar</button>
+                  </div>
+                  <div class="materias-list" id="materias-list"></div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Precio por hora (S/)</label>
+                  <input class="form-input" type="number" id="perfil-precio"
+                    placeholder="Ej. 40" min="1" style="max-width:180px;">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Horarios disponibles</label>
+                  <div class="materias-input-wrap">
+                    <input class="form-input" type="text" id="horario-nuevo"
+                      placeholder="Ej. Lunes 8-12" style="flex:1;">
+                    <button class="btn" onclick="agregarHorario()">+ Agregar</button>
+                  </div>
+                  <div class="horario-chips" id="horarios-list"></div>
+                </div>
+
+                <button class="btn btn-primary" onclick="guardarPerfil()" style="max-width:220px;">
+                  Guardar cambios
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div><!-- /page-content -->
     </div><!-- /main-content -->
   </div><!-- /app-layout -->
@@ -964,11 +1269,20 @@ body {
       <div class="bn-item active" id="bn-inicio" onclick="goTo('inicio')">
         <span class="bn-icon">🏠</span>Inicio
       </div>
-      <div class="bn-item" id="bn-tutores" onclick="goTo('tutores')">
+      <div class="bn-item student-only" id="bn-tutores" onclick="goTo('tutores')">
         <span class="bn-icon">🔍</span>Buscar
       </div>
-      <div class="bn-item" id="bn-reservas" onclick="goTo('reservas')">
+      <div class="bn-item student-only" id="bn-reservas" onclick="goTo('reservas')">
         <span class="bn-icon">📅</span>Reservas
+      </div>
+      <div class="bn-item tutor-only" id="bn-solicitudes" onclick="goTo('solicitudes')" style="display:none">
+        <span class="bn-icon">📬</span>Solicitudes
+      </div>
+      <div class="bn-item tutor-only" id="bn-historial" onclick="goTo('historial')" style="display:none">
+        <span class="bn-icon">📋</span>Historial
+      </div>
+      <div class="bn-item tutor-only" id="bn-mi-perfil" onclick="goTo('mi-perfil')" style="display:none">
+        <span class="bn-icon">✏️</span>Mi perfil
       </div>
     </div>
   </nav>
@@ -1134,8 +1448,12 @@ async function login() {
 // ── Login demo (sin backend activo) ─────────────────────────────────────
 function loginDemo(email, password) {
   const demoUsers = [
-    { id:'u1', nombre:'Carlos Mendoza', email:'carlos@uni.edu',    password:'123456', rol:'estudiante' },
-    { id:'u2', nombre:'Sofía López',    email:'sofia@uni.edu',     password:'123456', rol:'estudiante' },
+    { id:'u1', nombre:'Carlos Mendoza', email:'carlos@uni.edu',     password:'123456',   rol:'estudiante' },
+    { id:'u2', nombre:'Sofia Lopez',    email:'sofia@uni.edu',      password:'123456',   rol:'estudiante' },
+    { id:'t1', nombre:'Rafael Gomez',   email:'rafael@tutores.pe',  password:'tutor123', rol:'tutor' },
+    { id:'t2', nombre:'Maria Lopez',    email:'maria@tutores.pe',   password:'tutor123', rol:'tutor' },
+    { id:'t3', nombre:'Juan Perez',     email:'juan@tutores.pe',    password:'tutor123', rol:'tutor' },
+    { id:'t4', nombre:'Karen Rios',     email:'karen@tutores.pe',   password:'tutor123', rol:'tutor' },
     { id:'u3', nombre:'Admin General',  email:'admin@tutormatch.pe',password:'admin123', rol:'admin'  }
   ];
   const u = demoUsers.find(u => u.email === email && u.password === password);
@@ -1190,15 +1508,41 @@ function mostrarApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
 
-  // Rellenar datos de usuario en sidebar
   const initials = usuario.nombre.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   document.getElementById('sidebar-initials').textContent = initials;
   document.getElementById('sidebar-name').textContent     = usuario.nombre;
   document.getElementById('sidebar-role').textContent     = capitalize(usuario.rol);
   document.getElementById('topbar-user').textContent      = `Hola, ${usuario.nombre.split(' ')[0]}`;
 
-  cargarTutores();
-  cargarReservas();
+  // Mostrar/ocultar nav items según rol
+  const esTutor     = usuario.rol === 'tutor';
+  const esEstudiante = usuario.rol === 'estudiante';
+
+  document.querySelectorAll('.tutor-only').forEach(el => el.style.display = esTutor ? '' : 'none');
+  document.querySelectorAll('.student-only').forEach(el => el.style.display = esEstudiante ? '' : 'none');
+
+  if (usuario.rol === 'admin') {
+    // Admin: ir al panel de administración
+    window.location.href = 'tutormatch-admin.html';
+    return;
+  }
+
+  if (esTutor) {
+    // Panel tutor: mostrar vista tutor en inicio
+    document.getElementById('inicio-estudiante').style.display = 'none';
+    document.getElementById('inicio-tutor').style.display = '';
+    cargarSolicitudes();
+    cargarHistorial();
+    cargarPerfilTutor();
+    goTo('inicio');
+  } else {
+    // Panel estudiante
+    document.getElementById('inicio-estudiante').style.display = '';
+    document.getElementById('inicio-tutor').style.display = 'none';
+    cargarTutores();
+    cargarReservas();
+    goTo('inicio');
+  }
 }
 
 // ─── Navegación ──────────────────────────────────────────────────────────
@@ -1216,7 +1560,7 @@ function goTo(seccion) {
   document.getElementById(`bn-${seccion}`)?.classList.add('active');
 
   // Título
-  const titles = { inicio:'Inicio', tutores:'Buscar tutores', reservas:'Mis reservas' };
+  const titles = { inicio:'Inicio', tutores:'Buscar tutores', reservas:'Mis reservas', solicitudes:'Solicitudes pendientes', historial:'Historial de sesiones', 'mi-perfil':'Mi perfil' };
   document.getElementById('topbar-title').textContent = titles[seccion] || seccion;
 
   closeSidebar();
@@ -1586,6 +1930,445 @@ function formatFecha(fecha) {
 document.getElementById('modal-reserva').addEventListener('click', function(e) {
   if (e.target === this) cerrarModal();
 });
+
+// ════════════════════════════════════════════════════════════════
+//  PANEL TUTOR
+// ════════════════════════════════════════════════════════════════
+
+let tutorPerfil    = null;   // perfil completo del tutor logueado
+let historialData  = [];     // cache historial
+let filtroHistorial = 'todas';
+
+// ── Solicitudes pendientes ──────────────────────────────────────
+async function cargarSolicitudes() {
+  try {
+    const data = await apiFetch('/tutor/solicitudes');
+    renderSolicitudes(data.solicitudes || []);
+  } catch {
+    renderSolicitudes(solicitudesDemo());
+  }
+}
+
+function solicitudesDemo() {
+  // Filtra las reservas demo que le pertenecen al tutor logueado y están pendientes
+  return [
+    { id:'r3', estudianteNombre:'Sofia Lopez',    materia:'Algebra Lineal', fecha:'2025-04-27', hora:'15:00', duracionMinutos:60, nota:'Necesito entender transformaciones lineales', estado:'pendiente', precioTotal:44 },
+    { id:'r4', estudianteNombre:'Carlos Mendoza', materia:'Estadistica',    fecha:'2025-04-29', hora:'09:00', duracionMinutos:90, nota:'Distribuciones de probabilidad',              estado:'pendiente', precioTotal:66 }
+  ].filter(r => usuario && (usuario.id === 't1')); // solo para rafael en demo
+}
+
+function renderSolicitudes(lista) {
+  const container = document.getElementById('solicitudes-list');
+  document.getElementById('sol-count').textContent = `${lista.length} solicitud${lista.length !== 1 ? 'es' : ''}`;
+
+  // Actualizar badge en nav
+  const badge = document.getElementById('badge-solicitudes');
+  if (lista.length > 0) {
+    badge.style.display = '';
+    badge.textContent   = lista.length;
+  } else {
+    badge.style.display = 'none';
+  }
+
+  if (!lista.length) {
+    container.innerHTML = `<div class="empty">
+      <div class="empty-icon">📬</div>
+      <h3>Sin solicitudes nuevas</h3>
+      <p>Cuando un estudiante te reserve, aparecerá aquí</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = lista.map(s => {
+    const inits = (s.estudianteNombre||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `
+    <div class="solicitud-card" id="sol-${s.id}">
+      <div class="sol-header">
+        <div class="sol-avatar">${inits}</div>
+        <div class="sol-info">
+          <div class="sol-nombre">${s.estudianteNombre}</div>
+          <div class="sol-materia">${s.materia}</div>
+        </div>
+        <span class="pill pill-yellow">Pendiente</span>
+      </div>
+      <div class="sol-meta">
+        <div class="sol-meta-item"><div class="label">Fecha</div><div class="value">${formatFecha(s.fecha)}</div></div>
+        <div class="sol-meta-item"><div class="label">Hora</div><div class="value">${s.hora}</div></div>
+        <div class="sol-meta-item"><div class="label">Duración</div><div class="value">${s.duracionMinutos} min</div></div>
+        <div class="sol-meta-item"><div class="label">Ingreso</div><div class="value" style="color:var(--green)">S/${(s.precioTotal * 0.9).toFixed(0)}</div></div>
+      </div>
+      ${s.nota ? `<div class="sol-nota">💬 "${s.nota}"</div>` : ''}
+      <div class="sol-actions">
+        <button class="btn btn-accept" onclick="responderSolicitud('${s.id}','confirmada')">✓ Aceptar sesión</button>
+        <button class="btn btn-reject" onclick="responderSolicitud('${s.id}','cancelada')">✕ Rechazar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function responderSolicitud(id, estado) {
+  try {
+    const data = await apiFetch(`/tutor/reservas/${id}/estado`, 'PUT', { estado });
+    if (data.ok) {
+      procesarRespuesta(id, estado);
+    } else {
+      toast(data.mensaje || 'Error al actualizar', 'error');
+    }
+  } catch {
+    // Demo: actualizar visualmente
+    procesarRespuesta(id, estado);
+  }
+}
+
+function procesarRespuesta(id, estado) {
+  const card = document.getElementById(`sol-${id}`);
+  if (card) {
+    card.style.opacity    = '0';
+    card.style.transform  = 'translateX(20px)';
+    card.style.transition = 'all 0.3s';
+    setTimeout(() => card.remove(), 300);
+  }
+  const msg = estado === 'confirmada' ? '¡Sesión aceptada! El estudiante será notificado 🎉' : 'Solicitud rechazada';
+  const tipo = estado === 'confirmada' ? 'success' : 'error';
+  toast(msg, tipo);
+
+  // Actualizar badge
+  setTimeout(() => {
+    const remaining = document.querySelectorAll('[id^="sol-"]').length;
+    const badge = document.getElementById('badge-solicitudes');
+    badge.textContent   = remaining;
+    badge.style.display = remaining > 0 ? '' : 'none';
+    document.getElementById('sol-count').textContent = `${remaining} solicitud${remaining !== 1 ? 'es' : ''}`;
+  }, 350);
+}
+
+// ── Historial ───────────────────────────────────────────────────
+async function cargarHistorial() {
+  try {
+    const data = await apiFetch('/tutor/historial');
+    historialData = data.historial || [];
+  } catch {
+    historialData = historialDemo();
+  }
+  renderHistorial();
+  // Si es tutor y está en inicio, actualizar dashboard
+  if (usuario && usuario.rol === 'tutor') cargarInicioTutor();
+}
+
+function historialDemo() {
+  const demos = [
+    { id:'r1', estudianteNombre:'Carlos Mendoza', materia:'Calculo Diferencial', fecha:'2025-04-20', hora:'10:00', duracionMinutos:60, estado:'completada', precioTotal:44,   nota:'Repasar integrales por partes' },
+    { id:'r5', estudianteNombre:'Sofia Lopez',    materia:'Algebra Lineal',      fecha:'2025-04-25', hora:'15:00', duracionMinutos:60, estado:'completada', precioTotal:44,   nota:'' },
+    { id:'r3', estudianteNombre:'Sofia Lopez',    materia:'Algebra Lineal',      fecha:'2025-04-27', hora:'15:00', duracionMinutos:60, estado:'pendiente',  precioTotal:44,   nota:'Necesito entender transformaciones lineales' },
+    { id:'r4', estudianteNombre:'Carlos Mendoza', materia:'Estadistica',         fecha:'2025-04-29', hora:'09:00', duracionMinutos:90, estado:'pendiente',  precioTotal:66,   nota:'Distribuciones de probabilidad' }
+  ];
+  // Solo si es tutor t1 (rafael)
+  return usuario && usuario.id === 't1' ? demos : [];
+}
+
+function renderHistorial() {
+  const lista = filtroHistorial === 'todas'
+    ? historialData
+    : historialData.filter(r => r.estado === filtroHistorial);
+
+  const container = document.getElementById('historial-list');
+
+  if (!lista.length) {
+    container.innerHTML = `<div class="empty">
+      <div class="empty-icon">📋</div>
+      <h3>Sin sesiones en esta categoría</h3>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = lista.map(r => {
+    const inits = (r.estudianteNombre||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const botones = [];
+    if (r.estado === 'confirmada') {
+      botones.push(`<button class="btn btn-sm btn-success" onclick="completarSesion('${r.id}')">Marcar completada</button>`);
+    }
+    return `
+    <div class="reserva-card">
+      <div class="rc-header">
+        <div class="sol-avatar" style="width:44px;height:44px;font-size:14px;border-radius:50%;background:var(--accent-l);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">${inits}</div>
+        <div class="rc-info">
+          <div class="rc-materia">${r.materia}</div>
+          <div class="rc-tutor">Estudiante: ${r.estudianteNombre}</div>
+        </div>
+        <span class="pill ${estadoPill[r.estado]}">${estadoLabel[r.estado]}</span>
+      </div>
+      <div class="rc-meta">
+        <div class="rc-meta-item"><div class="label">Fecha</div><div class="value">${formatFecha(r.fecha)}</div></div>
+        <div class="rc-meta-item"><div class="label">Hora</div><div class="value">${r.hora}</div></div>
+        <div class="rc-meta-item"><div class="label">Duración</div><div class="value">${r.duracionMinutos} min</div></div>
+        <div class="rc-meta-item"><div class="label">Ingreso</div><div class="value" style="color:var(--green)">S/${(r.precioTotal*0.9).toFixed(0)}</div></div>
+      </div>
+      ${botones.length ? `<div class="rc-actions">${botones.join('')}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function filtrarHistorial(estado, btn) {
+  filtroHistorial = estado;
+  document.querySelectorAll('#filtros-historial .btn').forEach(b => b.classList.remove('active-filter'));
+  btn.classList.add('active-filter');
+  renderHistorial();
+}
+
+async function completarSesion(id) {
+  try {
+    await apiFetch(`/tutor/reservas/${id}/estado`, 'PUT', { estado:'completada' });
+  } catch {}
+  const r = historialData.find(r => r.id === id);
+  if (r) r.estado = 'completada';
+  renderHistorial();
+  toast('Sesión marcada como completada ✓', 'success');
+}
+
+// ── Perfil tutor ─────────────────────────────────────────────────
+async function cargarPerfilTutor() {
+  try {
+    const data = await apiFetch('/tutor/perfil');
+    tutorPerfil = data.perfil;
+    const stats = await apiFetch('/tutor/stats');
+    renderPerfilTutor(tutorPerfil, stats.stats);
+  } catch {
+    // Demo: buscar en datos demo
+    const perfilesDemoMap = {
+      t1:{ materias:['Calculo Diferencial','Algebra Lineal','Estadistica'], bio:'Ingeniero matematico con 5 anos de experiencia.', precioPorHora:40, disponible:true, horariosDisponibles:['Lunes 8-12','Miercoles 14-18','Viernes 8-12'], rating:4.9, totalResenas:142 },
+      t2:{ materias:['Python','Machine Learning','SQL'],                    bio:'Data Scientist con experiencia en ensenanza.',      precioPorHora:35, disponible:true, horariosDisponibles:['Martes 10-14','Jueves 16-20'],             rating:4.8, totalResenas:98 },
+      t3:{ materias:['Fisica General','Termodinamica'],                    bio:'Fisico teorico, examen de ingreso.',                precioPorHora:30, disponible:false,horariosDisponibles:['Lunes 16-20'],                               rating:4.7, totalResenas:77 },
+      t4:{ materias:['Ingles B2','IELTS','Conversacion'],                  bio:'Certificada Cambridge CELTA.',                       precioPorHora:28, disponible:true, horariosDisponibles:['Lunes a Viernes 7-9'],                     rating:4.9, totalResenas:201 }
+    };
+    tutorPerfil = perfilesDemoMap[usuario.id] || perfilesDemoMap.t1;
+    const statsDemo = { completadas: usuario.id==='t1'?2:1, ingresoTotal: usuario.id==='t1'?79.2:44, rating: tutorPerfil.rating };
+    renderPerfilTutor(tutorPerfil, statsDemo);
+  }
+}
+
+function renderPerfilTutor(perfil, stats) {
+  // Stats cards
+  if (stats) {
+    document.getElementById('ts-completadas').textContent = stats.completadas || 0;
+    document.getElementById('ts-ingresos').textContent    = `S/${(stats.ingresoTotal||0).toFixed(0)}`;
+    document.getElementById('ts-rating').textContent      = `${stats.rating || '—'}⭐`;
+  }
+
+  // Disponibilidad toggle
+  actualizarToggleDisp(perfil.disponible);
+
+  // Formulario
+  document.getElementById('perfil-bio').value    = perfil.bio || '';
+  document.getElementById('perfil-precio').value = perfil.precioPorHora || '';
+
+  // Materias
+  renderMaterias(perfil.materias || []);
+
+  // Horarios
+  renderHorarios(perfil.horariosDisponibles || []);
+}
+
+function actualizarToggleDisp(activo) {
+  const sw  = document.getElementById('disp-switch');
+  const lbl = document.getElementById('disp-label');
+  const sub = document.getElementById('disp-sub');
+  sw.classList.toggle('on', activo);
+  lbl.textContent = activo ? 'Disponible para sesiones' : 'No disponible';
+  sub.textContent = activo ? 'Los estudiantes pueden reservar contigo' : 'No recibirás nuevas solicitudes';
+  if (tutorPerfil) tutorPerfil.disponible = activo;
+}
+
+async function toggleDisponibilidad() {
+  const nuevo = !(tutorPerfil ? tutorPerfil.disponible : true);
+  try {
+    await apiFetch('/tutor/disponibilidad', 'PUT', { disponible: nuevo });
+  } catch {}
+  actualizarToggleDisp(nuevo);
+  toast(nuevo ? 'Ahora apareces como disponible 🟢' : 'Ahora apareces como no disponible 🔴', nuevo ? 'success' : '');
+}
+
+// Materias
+let materiasActuales = [];
+
+function renderMaterias(lista) {
+  materiasActuales = [...lista];
+  const container = document.getElementById('materias-list');
+  container.innerHTML = lista.map((m, i) => `
+    <span class="materia-tag">
+      ${m}
+      <button onclick="eliminarMateria(${i})" title="Eliminar">×</button>
+    </span>`).join('');
+}
+
+function agregarMateria() {
+  const input = document.getElementById('materia-nueva');
+  const val   = input.value.trim();
+  if (!val) return;
+  if (materiasActuales.includes(val)) { toast('Esa materia ya está en la lista', 'error'); return; }
+  materiasActuales.push(val);
+  renderMaterias(materiasActuales);
+  input.value = '';
+}
+
+function eliminarMateria(i) {
+  materiasActuales.splice(i, 1);
+  renderMaterias(materiasActuales);
+}
+
+// Horarios
+let horariosActuales = [];
+
+function renderHorarios(lista) {
+  horariosActuales = [...lista];
+  const container = document.getElementById('horarios-list');
+  container.innerHTML = lista.map((h, i) => `
+    <span class="horario-chip" onclick="eliminarHorario(${i})" title="Click para eliminar">
+      🕐 ${h} ×
+    </span>`).join('');
+}
+
+function agregarHorario() {
+  const input = document.getElementById('horario-nuevo');
+  const val   = input.value.trim();
+  if (!val) return;
+  horariosActuales.push(val);
+  renderHorarios(horariosActuales);
+  input.value = '';
+}
+
+function eliminarHorario(i) {
+  horariosActuales.splice(i, 1);
+  renderHorarios(horariosActuales);
+}
+
+// Guardar perfil
+async function guardarPerfil() {
+  const bio          = document.getElementById('perfil-bio').value.trim();
+  const precio       = document.getElementById('perfil-precio').value;
+  const alertErr     = document.getElementById('perfil-alert');
+  const alertOk      = document.getElementById('perfil-ok');
+
+  alertErr.classList.remove('show');
+  alertOk.classList.remove('show');
+
+  if (!bio) { alertErr.textContent = 'La biografía no puede estar vacía.'; alertErr.classList.add('show'); return; }
+  if (!precio || Number(precio) < 1) { alertErr.textContent = 'Ingresa un precio válido (mayor a 0).'; alertErr.classList.add('show'); return; }
+  if (materiasActuales.length === 0) { alertErr.textContent = 'Agrega al menos una materia.'; alertErr.classList.add('show'); return; }
+
+  const body = { bio, precioPorHora: Number(precio), materias: materiasActuales, horariosDisponibles: horariosActuales };
+
+  try {
+    const data = await apiFetch('/tutor/perfil', 'PUT', body);
+    if (data.ok) {
+      tutorPerfil = data.perfil;
+      alertOk.textContent = '¡Perfil actualizado correctamente!';
+      alertOk.classList.add('show');
+      setTimeout(() => alertOk.classList.remove('show'), 3000);
+    } else {
+      alertErr.textContent = data.mensaje;
+      alertErr.classList.add('show');
+    }
+  } catch {
+    // Demo: actualizar localmente
+    if (tutorPerfil) {
+      tutorPerfil.bio = bio;
+      tutorPerfil.precioPorHora = Number(precio);
+      tutorPerfil.materias = materiasActuales;
+      tutorPerfil.horariosDisponibles = horariosActuales;
+    }
+    alertOk.textContent = '¡Perfil actualizado! (modo demo)';
+    alertOk.classList.add('show');
+    setTimeout(() => alertOk.classList.remove('show'), 3000);
+  }
+}
+
+// Agregar materia con Enter
+document.getElementById('materia-nueva')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); agregarMateria(); }
+});
+document.getElementById('horario-nuevo')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); agregarHorario(); }
+});
+
+
+// ── Dashboard inicio tutor ──────────────────────────────────────
+async function cargarInicioTutor() {
+  // Stats cards
+  try {
+    const data = await apiFetch('/tutor/stats');
+    const s = data.stats;
+    document.getElementById('tstat-pendientes').textContent  = s.pendientes  || 0;
+    document.getElementById('tstat-confirmadas').textContent = s.confirmadas || 0;
+    document.getElementById('tstat-completadas').textContent = s.completadas || 0;
+    document.getElementById('tstat-ingresos').textContent    = 'S/' + (s.ingresoTotal || 0).toFixed(0);
+  } catch {
+    const demo = {
+      t1:{p:2,c:1,comp:2,ing:79}, t2:{p:0,c:1,comp:1,ing:31},
+      t3:{p:0,c:0,comp:0,ing:0},  t4:{p:0,c:0,comp:1,ing:27}
+    };
+    const s = demo[usuario.id] || demo.t1;
+    document.getElementById('tstat-pendientes').textContent  = s.p;
+    document.getElementById('tstat-confirmadas').textContent = s.c;
+    document.getElementById('tstat-completadas').textContent = s.comp;
+    document.getElementById('tstat-ingresos').textContent    = 'S/' + s.ing;
+  }
+
+  // Próximas confirmadas
+  const proxContainer = document.getElementById('tutor-proximas-list');
+  const confirmadas = historialData.filter(r => r.estado === 'confirmada')
+    .sort((a,b) => new Date(a.fecha+'T'+a.hora) - new Date(b.fecha+'T'+b.hora));
+
+  if (!confirmadas.length) {
+    proxContainer.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:14px 0;">No tienes sesiones confirmadas próximamente</p>';
+  } else {
+    proxContainer.innerHTML = confirmadas.slice(0,3).map(r => {
+      const inits = (r.estudianteNombre||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      return `<div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--accent-l);color:var(--accent);
+          display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">${inits}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;font-size:14px;">${r.materia}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">con ${r.estudianteNombre}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-weight:700;font-size:13px;">${formatFecha(r.fecha)}</div>
+          <div style="font-size:12px;color:var(--muted);">${r.hora} · ${r.duracionMinutos}min</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Preview solicitudes pendientes
+  const solContainer = document.getElementById('tutor-solicitudes-preview');
+  const pendientes = historialData.filter(r => r.estado === 'pendiente');
+
+  if (!pendientes.length) {
+    solContainer.innerHTML = '<p style="color:var(--muted);font-size:14px;text-align:center;padding:14px 0;">Sin solicitudes nuevas por ahora</p>';
+  } else {
+    solContainer.innerHTML = pendientes.slice(0,2).map(r => {
+      const inits = (r.estudianteNombre||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+      return `<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--red-l);color:var(--red);
+          display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">${inits}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:14px;">${r.materia}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">${r.estudianteNombre} · ${formatFecha(r.fecha)} ${r.hora}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <button class="btn btn-sm btn-accept" style="height:32px;padding:0 12px;font-size:12px;"
+            onclick="responderSolicitud('${r.id}','confirmada');setTimeout(cargarInicioTutor,400);">✓</button>
+          <button class="btn btn-sm btn-reject" style="height:32px;padding:0 12px;font-size:12px;"
+            onclick="responderSolicitud('${r.id}','cancelada');setTimeout(cargarInicioTutor,400);">✕</button>
+        </div>
+      </div>`;
+    }).join('');
+    if (pendientes.length > 2) {
+      solContainer.innerHTML += `<p style="text-align:center;padding:12px 0 0;font-size:13px;color:var(--accent);font-weight:700;cursor:pointer;"
+        onclick="goTo('solicitudes')">Ver ${pendientes.length - 2} más →</p>`;
+    }
+  }
+}
+
 </script>
 </body>
 </html>
