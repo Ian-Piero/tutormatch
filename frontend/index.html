@@ -192,6 +192,9 @@ body {
 .btn-success { border-color: var(--green); color: var(--green); }
 .btn-success:hover { background: var(--green-l); }
 
+.btn-rate { border-color: var(--yellow); color: var(--yellow); }
+.btn-rate:hover { background: var(--yellow-l); }
+
 /* ─── App Layout ───────────────────────────────────────────────────────── */
 #app { display: none; min-height: 100vh; }
 
@@ -602,6 +605,20 @@ body {
 
 .rc-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
+/* ─── Calificación en tarjeta de reserva ───────────────────────────────── */
+.rc-rating-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--yellow-l);
+  border-radius: var(--r-sm);
+  margin-bottom: 14px;
+}
+.rc-rating-box .stars-display { color: #f59e0b; font-size: 16px; letter-spacing: -1px; flex-shrink: 0; }
+.rc-rating-box .rc-rating-text { font-size: 13px; color: var(--text); }
+.rc-rating-box .rc-rating-text strong { display: block; font-size: 12.5px; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
+
 /* ─── Status pills ─────────────────────────────────────────────────────── */
 .pill {
   display: inline-flex; align-items: center;
@@ -902,6 +919,57 @@ body {
   padding: 0 5px; margin-left: auto;
 }
 
+/* ─── Calificación (modal + estrellas interactivas) ────────────────────── */
+.rate-tutor-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  background: var(--accent-l);
+  border-radius: var(--r-sm);
+  margin-bottom: 20px;
+}
+.rate-tutor-box .ts-name { font-weight: 800; font-size: 15px; }
+.rate-tutor-box .ts-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.star-input {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  margin: 6px 0 4px;
+}
+.star-input .star {
+  font-size: 38px;
+  line-height: 1;
+  color: var(--border);
+  cursor: pointer;
+  transition: color 0.12s, transform 0.12s;
+  user-select: none;
+}
+.star-input .star:hover { transform: scale(1.12); }
+.star-input .star.filled { color: #f59e0b; }
+
+.star-label {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  min-height: 18px;
+  margin-bottom: 18px;
+}
+
+/* Reseñas ya recibidas (lado tutor) */
+.resena-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.resena-item:last-child { border-bottom: none; }
+.resena-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.resena-autor { font-size: 13.5px; font-weight: 700; }
+.resena-fecha { font-size: 11.5px; color: var(--muted); }
+.resena-comentario { font-size: 13.5px; color: var(--text); line-height: 1.5; }
+.resena-comentario.vacio { color: var(--muted); font-style: italic; }
+
 /* ─── Misc helpers ─────────────────────────────────────────────────────── */
 .text-muted { color: var(--muted); }
 .mt-16 { margin-top: 16px; }
@@ -1176,6 +1244,16 @@ body {
           <div class="reservas-list" id="historial-list">
             <div class="loading"><div class="spinner"></div> Cargando historial...</div>
           </div>
+
+          <div class="card mt-24">
+            <div class="card-header">
+              <span class="card-title">Reseñas recibidas</span>
+              <span id="resenas-count" style="font-size:12.5px;color:var(--muted);font-weight:600;"></span>
+            </div>
+            <div class="card-body" id="resenas-list">
+              <div class="loading"><div class="spinner"></div> Cargando reseñas...</div>
+            </div>
+          </div>
         </div>
 
         <!-- ── SECCIÓN: MI PERFIL (tutor) ─────────────────── -->
@@ -1362,6 +1440,49 @@ body {
   </div>
 </div>
 
+<!-- ════════════════════════════════════════════════
+     MODAL: CALIFICAR TUTOR
+════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-calificar">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-header">
+      <span class="modal-title">Calificar sesión</span>
+      <button class="modal-close" onclick="cerrarModalCalificar()">✕</button>
+    </div>
+
+    <div class="rate-tutor-box" id="cal-tutor-info">
+      <div class="tc-avatar av-blue" id="cal-avatar">--</div>
+      <div>
+        <div class="ts-name" id="cal-tutor-nombre">--</div>
+        <div class="ts-sub" id="cal-materia">--</div>
+      </div>
+    </div>
+
+    <div class="alert alert-error" id="cal-alert"></div>
+
+    <label class="form-label" style="text-align:center;display:block;">¿Cómo estuvo la sesión?</label>
+    <div class="star-input" id="star-input">
+      <span class="star" data-val="1" onclick="setEstrella(1)">★</span>
+      <span class="star" data-val="2" onclick="setEstrella(2)">★</span>
+      <span class="star" data-val="3" onclick="setEstrella(3)">★</span>
+      <span class="star" data-val="4" onclick="setEstrella(4)">★</span>
+      <span class="star" data-val="5" onclick="setEstrella(5)">★</span>
+    </div>
+    <div class="star-label" id="star-label">Toca una estrella para calificar</div>
+
+    <div class="form-group">
+      <label class="form-label">Comentario (opcional)</label>
+      <textarea class="form-input" id="cal-comentario" rows="3"
+        style="height:auto;padding:10px 14px;resize:vertical;"
+        placeholder="Cuéntale a otros estudiantes cómo te fue..."></textarea>
+    </div>
+
+    <button class="btn btn-primary" onclick="enviarCalificacion()">
+      Enviar calificación
+    </button>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -1386,6 +1507,10 @@ let reservasData = [];
 let tutorActivo  = null;
 let soloDisp     = false;
 let filtroEstado = 'todas';
+
+// Calificación en curso
+let reservaACalificar = null;
+let estrellaSeleccionada = 0;
 
 // ─── Inicialización ──────────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', () => {
@@ -1460,8 +1585,8 @@ function loginDemo(email, password) {
   if (!u) { mostrarAlerta('auth-alert', 'Credenciales incorrectas. (Demo: carlos@uni.edu / 123456)'); return; }
   token   = 'DEMO_TOKEN';
   usuario = u;
-  localStorage.setItem('tm_token', token);
-  localStorage.setItem('tm_user', JSON.stringify(u));
+  escribirStorage('tm_token', token);
+  escribirStorage('tm_user', JSON.stringify(u));
   mostrarApp();
 }
 
@@ -1685,8 +1810,8 @@ async function cargarReservas() {
 
 function reservasDemo() {
   return [
-    { id:'r1', materia:'Cálculo Diferencial', fecha:'2025-04-26', hora:'10:00', duracionMinutos:60, estado:'completada', precioTotal:44, tutor:{ nombre:'Rafael Gómez' }, nota:'' },
-    { id:'r2', materia:'Python para Data',    fecha:'2025-04-28', hora:'10:00', duracionMinutos:90, estado:'confirmada', precioTotal:52.5, tutor:{ nombre:'María López' },  nota:'Quiero aprender Pandas' }
+    { id:'r1', materia:'Cálculo Diferencial', fecha:'2025-04-26', hora:'10:00', duracionMinutos:60, estado:'completada', precioTotal:44, tutor:{ id:'t1', nombre:'Rafael Gómez' }, nota:'', calificacion:null },
+    { id:'r2', materia:'Python para Data',    fecha:'2025-04-28', hora:'10:00', duracionMinutos:90, estado:'confirmada', precioTotal:52.5, tutor:{ id:'t2', nombre:'María López' },  nota:'Quiero aprender Pandas', calificacion:null }
   ];
 }
 
@@ -1726,8 +1851,25 @@ function renderReservas() {
     if (r.estado === 'confirmada') {
       botones.push(`<button class="btn btn-sm btn-success" onclick="cambiarEstado('${r.id}','completada')">Marcar completada</button>`);
     }
-    if (r.estado === 'completada') {
+    if (r.estado === 'completada' && !r.calificacion) {
+      botones.push(`<button class="btn btn-sm btn-rate" onclick="abrirModalCalificar('${r.id}')">★ Calificar sesión</button>`);
+    }
+    if (r.estado === 'completada' && r.calificacion) {
       botones.push(`<button class="btn btn-sm" disabled style="opacity:.5;cursor:default;">✓ Completada</button>`);
+    }
+
+    // Caja de calificación ya enviada
+    let ratingBox = '';
+    if (r.calificacion) {
+      const estr = '★'.repeat(r.calificacion.estrellas) + '☆'.repeat(5 - r.calificacion.estrellas);
+      ratingBox = `
+      <div class="rc-rating-box">
+        <span class="stars-display">${estr}</span>
+        <div class="rc-rating-text">
+          <strong>Tu calificación</strong>
+          ${r.calificacion.comentario ? escapeHtml(r.calificacion.comentario) : '<span class="text-muted">Sin comentario</span>'}
+        </div>
+      </div>`;
     }
 
     return `
@@ -1749,6 +1891,7 @@ function renderReservas() {
         <div class="rc-meta-item"><div class="label">Total</div><div class="value" style="color:var(--accent)">S/${r.precioTotal}</div></div>
       </div>
       ${r.nota ? `<p style="font-size:13px;color:var(--muted);margin-bottom:12px;">📝 ${r.nota}</p>` : ''}
+      ${ratingBox}
       <div class="rc-actions">${botones.join('')}</div>
     </div>`;
   }).join('');
@@ -1777,6 +1920,11 @@ async function cambiarEstado(id, estado) {
     const r = reservasData.find(r => r.id === id);
     if (r) { r.estado = estado; renderReservas(); actualizarStats(); }
     toast(`Estado actualizado (demo)`, 'success');
+  }
+
+  // Si la reserva pasó a "completada", invitamos a calificar
+  if (estado === 'completada') {
+    setTimeout(() => abrirModalCalificar(id), 400);
   }
 }
 
@@ -1856,7 +2004,8 @@ async function crearReserva() {
       duracionMinutos: mins,
       nota, estado: 'pendiente',
       precioTotal: parseFloat((sub+com).toFixed(2)),
-      tutor: { nombre: tutorActivo.nombre },
+      tutor: { id: tutorActivo.id, nombre: tutorActivo.nombre },
+      calificacion: null,
       creadoEn: new Date().toISOString()
     };
     reservasData.unshift(demo);
@@ -1865,6 +2014,98 @@ async function crearReserva() {
     actualizarStats();
     toast('¡Reserva creada! (modo demo) 🎉', 'success');
     goTo('reservas');
+  }
+}
+
+// ─── Modal: Calificar sesión ──────────────────────────────────────────────
+function abrirModalCalificar(reservaId) {
+  const r = reservasData.find(r => r.id === reservaId);
+  if (!r) return;
+
+  reservaACalificar = r;
+  estrellaSeleccionada = r.calificacion ? r.calificacion.estrellas : 0;
+
+  const inits = (r.tutor?.nombre || '?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('cal-avatar').textContent = inits;
+  document.getElementById('cal-tutor-nombre').textContent = r.tutor?.nombre || 'Tutor';
+  document.getElementById('cal-materia').textContent = r.materia;
+  document.getElementById('cal-comentario').value = r.calificacion ? (r.calificacion.comentario || '') : '';
+  ocultarAlerta('cal-alert');
+
+  pintarEstrellas(estrellaSeleccionada);
+  document.getElementById('modal-calificar').classList.add('open');
+}
+
+function cerrarModalCalificar() {
+  document.getElementById('modal-calificar').classList.remove('open');
+  reservaACalificar = null;
+  estrellaSeleccionada = 0;
+}
+
+const etiquetasEstrella = { 1:'Muy mala', 2:'Mala', 3:'Regular', 4:'Buena', 5:'Excelente' };
+
+function setEstrella(n) {
+  estrellaSeleccionada = n;
+  pintarEstrellas(n);
+}
+
+function pintarEstrellas(n) {
+  document.querySelectorAll('#star-input .star').forEach(s => {
+    s.classList.toggle('filled', parseInt(s.dataset.val) <= n);
+  });
+  document.getElementById('star-label').textContent = n > 0
+    ? `${etiquetasEstrella[n]} (${n}/5)`
+    : 'Toca una estrella para calificar';
+}
+
+// Efecto hover en las estrellas (previsualización)
+document.getElementById('star-input')?.addEventListener('mouseover', e => {
+  if (!e.target.classList.contains('star')) return;
+  pintarEstrellas(parseInt(e.target.dataset.val));
+});
+document.getElementById('star-input')?.addEventListener('mouseleave', () => {
+  pintarEstrellas(estrellaSeleccionada);
+});
+
+async function enviarCalificacion() {
+  if (!reservaACalificar) return;
+  if (estrellaSeleccionada < 1) {
+    mostrarAlerta('cal-alert', 'Selecciona al menos una estrella.');
+    return;
+  }
+
+  const comentario = document.getElementById('cal-comentario').value.trim();
+  const body = { estrellas: estrellaSeleccionada, comentario };
+
+  try {
+    const data = await apiFetch(`/reservas/${reservaACalificar.id}/calificacion`, 'POST', body);
+    if (!data.ok) { mostrarAlerta('cal-alert', data.mensaje); return; }
+    aplicarCalificacionLocal(reservaACalificar.id, data.calificacion || body);
+  } catch {
+    // Demo: guardar localmente
+    aplicarCalificacionLocal(reservaACalificar.id, { ...body, fecha: new Date().toISOString() });
+  }
+
+  cerrarModalCalificar();
+  renderReservas();
+  toast('¡Gracias por tu calificación! ⭐', 'success');
+}
+
+function aplicarCalificacionLocal(reservaId, calificacion) {
+  const r = reservasData.find(r => r.id === reservaId);
+  if (r) r.calificacion = calificacion;
+
+  // Si el tutor tiene perfil cargado en tutoresData, ajustamos su rating visible (solo demo/UX)
+  if (r && r.tutor) {
+    const t = tutoresData.find(t => t.id === r.tutor.id);
+    if (t) {
+      const totalPrevio = t.totalResenas || 0;
+      const ratingPrevio = t.rating || calificacion.estrellas;
+      const nuevoTotal = totalPrevio + 1;
+      const nuevoRating = ((ratingPrevio * totalPrevio) + calificacion.estrellas) / nuevoTotal;
+      t.totalResenas = nuevoTotal;
+      t.rating = Math.round(nuevoRating * 10) / 10;
+    }
   }
 }
 
@@ -1926,9 +2167,18 @@ function formatFecha(fecha) {
   return `${d} ${meses[parseInt(m)-1]} ${y}`;
 }
 
-// Cerrar modal al hacer clic fuera
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Cerrar modales al hacer clic fuera
 document.getElementById('modal-reserva').addEventListener('click', function(e) {
   if (e.target === this) cerrarModal();
+});
+document.getElementById('modal-calificar').addEventListener('click', function(e) {
+  if (e.target === this) cerrarModalCalificar();
 });
 
 // ════════════════════════════════════════════════════════════════
@@ -2051,16 +2301,17 @@ async function cargarHistorial() {
     historialData = historialDemo();
   }
   renderHistorial();
+  renderResenas();
   // Si es tutor y está en inicio, actualizar dashboard
   if (usuario && usuario.rol === 'tutor') cargarInicioTutor();
 }
 
 function historialDemo() {
   const demos = [
-    { id:'r1', estudianteNombre:'Carlos Mendoza', materia:'Calculo Diferencial', fecha:'2025-04-20', hora:'10:00', duracionMinutos:60, estado:'completada', precioTotal:44,   nota:'Repasar integrales por partes' },
-    { id:'r5', estudianteNombre:'Sofia Lopez',    materia:'Algebra Lineal',      fecha:'2025-04-25', hora:'15:00', duracionMinutos:60, estado:'completada', precioTotal:44,   nota:'' },
-    { id:'r3', estudianteNombre:'Sofia Lopez',    materia:'Algebra Lineal',      fecha:'2025-04-27', hora:'15:00', duracionMinutos:60, estado:'pendiente',  precioTotal:44,   nota:'Necesito entender transformaciones lineales' },
-    { id:'r4', estudianteNombre:'Carlos Mendoza', materia:'Estadistica',         fecha:'2025-04-29', hora:'09:00', duracionMinutos:90, estado:'pendiente',  precioTotal:66,   nota:'Distribuciones de probabilidad' }
+    { id:'r1', estudianteNombre:'Carlos Mendoza', materia:'Calculo Diferencial', fecha:'2025-04-20', hora:'10:00', duracionMinutos:60, estado:'completada', precioTotal:44,   nota:'Repasar integrales por partes', calificacion:{ estrellas:5, comentario:'Excelente tutor, muy paciente y claro explicando.' } },
+    { id:'r5', estudianteNombre:'Sofia Lopez',    materia:'Algebra Lineal',      fecha:'2025-04-25', hora:'15:00', duracionMinutos:60, estado:'completada', precioTotal:44,   nota:'', calificacion:{ estrellas:4, comentario:'Buena sesión, me ayudó a entender transformaciones lineales.' } },
+    { id:'r3', estudianteNombre:'Sofia Lopez',    materia:'Algebra Lineal',      fecha:'2025-04-27', hora:'15:00', duracionMinutos:60, estado:'pendiente',  precioTotal:44,   nota:'Necesito entender transformaciones lineales', calificacion:null },
+    { id:'r4', estudianteNombre:'Carlos Mendoza', materia:'Estadistica',         fecha:'2025-04-29', hora:'09:00', duracionMinutos:90, estado:'pendiente',  precioTotal:66,   nota:'Distribuciones de probabilidad', calificacion:null }
   ];
   // Solo si es tutor t1 (rafael)
   return usuario && usuario.id === 't1' ? demos : [];
@@ -2087,6 +2338,22 @@ function renderHistorial() {
     if (r.estado === 'confirmada') {
       botones.push(`<button class="btn btn-sm btn-success" onclick="completarSesion('${r.id}')">Marcar completada</button>`);
     }
+    let ratingBox = '';
+    if (r.estado === 'completada' && r.calificacion) {
+      const estr = '★'.repeat(r.calificacion.estrellas) + '☆'.repeat(5 - r.calificacion.estrellas);
+      ratingBox = `
+      <div class="rc-rating-box">
+        <span class="stars-display">${estr}</span>
+        <div class="rc-rating-text">
+          <strong>Calificación del estudiante</strong>
+          ${r.calificacion.comentario ? escapeHtml(r.calificacion.comentario) : '<span class="text-muted">Sin comentario</span>'}
+        </div>
+      </div>`;
+    } else if (r.estado === 'completada') {
+      ratingBox = `<div class="rc-rating-box" style="background:var(--surface);">
+        <span class="rc-rating-text text-muted">El estudiante todavía no calificó esta sesión.</span>
+      </div>`;
+    }
     return `
     <div class="reserva-card">
       <div class="rc-header">
@@ -2103,6 +2370,7 @@ function renderHistorial() {
         <div class="rc-meta-item"><div class="label">Duración</div><div class="value">${r.duracionMinutos} min</div></div>
         <div class="rc-meta-item"><div class="label">Ingreso</div><div class="value" style="color:var(--green)">S/${(r.precioTotal*0.9).toFixed(0)}</div></div>
       </div>
+      ${ratingBox}
       ${botones.length ? `<div class="rc-actions">${botones.join('')}</div>` : ''}
     </div>`;
   }).join('');
@@ -2123,6 +2391,35 @@ async function completarSesion(id) {
   if (r) r.estado = 'completada';
   renderHistorial();
   toast('Sesión marcada como completada ✓', 'success');
+}
+
+// ── Reseñas recibidas (resumen para el tutor) ────────────────────
+function renderResenas() {
+  const container = document.getElementById('resenas-list');
+  const countEl   = document.getElementById('resenas-count');
+  if (!container) return;
+
+  const conResena = historialData.filter(r => r.estado === 'completada' && r.calificacion);
+  countEl.textContent = conResena.length ? `${conResena.length} reseña${conResena.length !== 1 ? 's' : ''}` : '';
+
+  if (!conResena.length) {
+    container.innerHTML = `<p style="color:var(--muted);font-size:14px;text-align:center;padding:14px 0;">Aún no tienes reseñas de estudiantes.</p>`;
+    return;
+  }
+
+  container.innerHTML = conResena.map(r => {
+    const estr = '★'.repeat(r.calificacion.estrellas) + '☆'.repeat(5 - r.calificacion.estrellas);
+    return `
+    <div class="resena-item">
+      <div class="resena-top">
+        <span class="resena-autor">${r.estudianteNombre} — <span class="stars-display" style="color:#f59e0b;">${estr}</span></span>
+        <span class="resena-fecha">${formatFecha(r.fecha)}</span>
+      </div>
+      <div class="resena-comentario ${r.calificacion.comentario ? '' : 'vacio'}">
+        ${r.calificacion.comentario ? escapeHtml(r.calificacion.comentario) : 'Sin comentario'}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── Perfil tutor ─────────────────────────────────────────────────
